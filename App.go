@@ -4,26 +4,28 @@ import (
 	"log"
 
 	"gopkg.in/macaron.v1"
-	mgo "gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2"
 )
 
 func main() {
 	m := macaron.Classic()
-	//getSession()
-
+	insert()
+	
 	m.Get("/", func() string {
 		return "Hello world!"
 	})
 	m.Run()
 }
 
-type User struct {
-	Username string `json:"username",bson:"username"`
-	Password string `json:"password",bson:"password"`
-}
+type (
+	User struct {
+		Username string
+		Password string
+	}
+)
 
 //adapted from https://stevenwhite.com/building-a-rest-service-with-golang-3/ used to make connection to mongoDB database
-func getSession() *mgo.Session {
+func insert() *mgo.Session {
 	// Connect to our local mongo
 	s, err := mgo.Dial("mongodb://test:test@ds035006.mlab.com:35006/heroku_lzbj5rj0")
 
