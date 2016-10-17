@@ -23,7 +23,7 @@ func main() {
 		fmt.Println("Value: " + val)
 		//io.WriteString(res, "Do my search for : "+val)
 		res.Header().Set("Content-Type", "text/html")
-		io.WriteString(res, `<form method="POST"><input type="text" name="q"><input type="submit"></form>`)
+		io.WriteString(res, `<form method="POST"><input type="text" name="stuff"><input type="submit"></form>`)
 		//io.WriteString(res, `<form method="POST"><input type="checkbox" name="q"><input type="submit"></form>`)
 		//io.WriteString(res, `<form method="POST" enctype="multipart/form-data"><input type="file" name="stuff"><input type="submit"></form>`)
 	})
