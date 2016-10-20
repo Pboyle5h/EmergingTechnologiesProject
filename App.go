@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"io"
 	"log"
+	"net/http"
 
 	"gopkg.in/macaron.v1"
 	"gopkg.in/mgo.v2"
@@ -9,11 +12,16 @@ import (
 
 func main() {
 	m := macaron.Classic()
-	insert()
-	
-	m.Get("/", func() string {
-		return "Hello world!"
+	//insert()
+	http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
+		key := "stuff"
+		val := req.FormValue(key)
+		fmt.Println("Value: " + val)
+		res.Header().Set("Content-Type", "text/html")
+		io.WriteString(res, `<form method="POST"><input type="text" name="stuff"><input type="submit"></form>`)
+
 	})
+
 	m.Run()
 }
 
@@ -25,6 +33,7 @@ type (
 )
 
 //adapted from https://stevenwhite.com/building-a-rest-service-with-golang-3/ used to make connection to mongoDB database
+
 func insert() *mgo.Session {
 	// Connect to our local mongo
 	s, err := mgo.Dial("mongodb://test:test@ds035006.mlab.com:35006/heroku_lzbj5rj0")
