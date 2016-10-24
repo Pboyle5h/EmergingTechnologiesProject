@@ -19,8 +19,11 @@ func init() {
 
 func main() {
 	//m := macaron.Classic()
-	//insert()
+	//m.Use(macaron.Renderer())
+	//m.Get("/", serveResource)
+	//m.Get("/Register", Register)
 	http.HandleFunc("/", display)
+	http.HandleFunc("/Register", Register)
 	http.HandleFunc("/css/", serveResource)
 	http.Handle("/favicon.ico", http.NotFoundHandler())
 	http.ListenAndServe(":4000", nil)
@@ -38,10 +41,30 @@ func display(w http.ResponseWriter, req *http.Request) {
 
 type (
 	User struct {
+		Name     string
 		Username string
 		Password string
+		Email    string
 	}
 )
+
+func Register(w http.ResponseWriter, req *http.Request) {
+
+	u := req.FormValue("username")
+	p := req.FormValue("password")
+	e := req.FormValue("email")
+	n := req.FormValue("name")
+	err := tpl.ExecuteTemplate(w, "index.html", User{u, p, e, n})
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		log.Fatalln(err)
+	}
+
+	a := User{Username: u, Password: p, Email: e, Name: n}
+	if a.Username != "" || a.Password != "" || a.Email != "" || a.Name != "" {
+		insert(a)
+	}
+}
 
 //http://stackoverflow.com/questions/36323232/golang-css-files-are-being-sent-with-content-type-text-plain
 func serveResource(w http.ResponseWriter, req *http.Request) {
@@ -74,7 +97,7 @@ func insert(a User) *mgo.Session {
 		panic(err)
 	}
 	c := s.DB("heroku_lzbj5rj0").C("Users")
-	err = c.Insert(&User{a.Username, a.Password})
+	err = c.Insert(&User{a.Name, a.Username, a.Password, a.Email})
 	if err != nil {
 		log.Fatal(err)
 	}
