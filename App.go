@@ -20,11 +20,20 @@ func init() {
 func main() {
 	//m := macaron.Classic()
 	//insert()
-	http.HandleFunc("/", foo)
+	http.HandleFunc("/", display)
 	http.HandleFunc("/css/", serveResource)
 	http.Handle("/favicon.ico", http.NotFoundHandler())
 	http.ListenAndServe(":4000", nil)
 	//m.Run()
+}
+
+func display(w http.ResponseWriter, req *http.Request) {
+	err := tpl.Execute(w, "index.html")
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		log.Fatalln(err)
+	}
+
 }
 
 type (
@@ -34,6 +43,7 @@ type (
 	}
 )
 
+//http://stackoverflow.com/questions/36323232/golang-css-files-are-being-sent-with-content-type-text-plain
 func serveResource(w http.ResponseWriter, req *http.Request) {
 	path := "public" + req.URL.Path
 	var contentType string
@@ -51,22 +61,6 @@ func serveResource(w http.ResponseWriter, req *http.Request) {
 		br.WriteTo(w)
 	} else {
 		w.WriteHeader(404)
-	}
-}
-
-func foo(w http.ResponseWriter, req *http.Request) {
-
-	u := req.FormValue("username")
-	p := req.FormValue("password")
-	err := tpl.ExecuteTemplate(w, "index.html", User{u, p})
-	if err != nil {
-		http.Error(w, err.Error(), 500)
-		log.Fatalln(err)
-	}
-
-	a := User{Username: u, Password: p}
-	if a.Username != "" || a.Password != "" {
-		insert(a)
 	}
 }
 
