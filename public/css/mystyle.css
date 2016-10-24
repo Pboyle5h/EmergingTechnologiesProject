@@ -1,12 +1,4 @@
- 
-body{
-    background: url("homeImg.jpg")no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    background-size: cover;
-    -o-background-size: cover;
-  
-}
+
  .navbar.transparent.navbar-inverse .navbar-inner {
    background: rgba(0,0,0,0.4);
 }
@@ -17,7 +9,14 @@ header {
     right:650px;
     font-size: 15px;
     color: #f4c842;
-
+    }
+     
+body{
+    background: url("homeImg.jpg")no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;  
 }
 
 h1 {
