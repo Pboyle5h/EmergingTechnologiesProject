@@ -8,6 +8,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/gorilla/mux"
 	"gopkg.in/mgo.v2"
 )
 
@@ -18,16 +19,14 @@ func init() {
 }
 
 func main() {
-	//m := macaron.Classic()
-	//m.Use(macaron.Renderer())
-	//m.Get("/", serveResource)
-	//m.Get("/Register", Register)
-	http.HandleFunc("/", display)
-	http.HandleFunc("/Register", Register)
+	r := mux.NewRouter()
+	r.HandleFunc("/", display)
+	r.HandleFunc("/Register", Register)
+	//r.HandleFunc("/css/", serveResource)
+	http.Handle("/", r)
 	http.HandleFunc("/css/", serveResource)
-	http.Handle("/favicon.ico", http.NotFoundHandler())
 	http.ListenAndServe(":4000", nil)
-	//m.Run()
+
 }
 
 func display(w http.ResponseWriter, req *http.Request) {
