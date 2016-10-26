@@ -9,8 +9,12 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
 	"gopkg.in/mgo.v2"
 )
+
+// all session code adapted from http://www.gorillatoolkit.org/pkg/sessions
+var store = sessions.NewCookieStore([]byte("secret"))
 
 var tpl *template.Template
 
@@ -21,7 +25,8 @@ func init() {
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", display)
-	r.HandleFunc("/Register", Register)
+	r.HandleFunc("/register", Register)
+	r.HandleFunc("/login", loginHandler)
 	//r.HandleFunc("/css/", serveResource)
 	http.Handle("/", r)
 	http.HandleFunc("/css/", serveResource)
@@ -53,16 +58,53 @@ func Register(w http.ResponseWriter, req *http.Request) {
 	p := req.FormValue("password")
 	e := req.FormValue("email")
 	n := req.FormValue("name")
-	err := tpl.ExecuteTemplate(w, "index.html", User{u, p, e, n})
+
+	session, err := store.Get(req, "session")
 	if err != nil {
-		http.Error(w, err.Error(), 500)
-		log.Fatalln(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+	session.Values["username"] = u
+	session.Values["password"] = p
+	session.Save(req, w)
 
 	a := User{Username: u, Password: p, Email: e, Name: n}
 	if a.Username != "" || a.Password != "" || a.Email != "" || a.Name != "" {
 		insert(a)
 	}
+
+	http.Redirect(w, req, "/", 302)
+}
+
+// adapted from https://devcenter.heroku.com/articles/go-sessions
+func loginHandler(w http.ResponseWriter, req *http.Request) {
+	username := req.FormValue("username")
+	password := req.FormValue("password")
+
+	/* WE NEED TO ADD MONGO CHECKING HERE AS WELL */
+	//if err := session.DB(authDB).Login(user, pass); err == nil {
+	session, err := store.Get(req, "session")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	session.Values["username"] = username
+	session.Values["password"] = password
+	session.Save(req, w)
+	//}
+	http.Redirect(w, req, "/", 302)
+}
+
+func logoutHandler(w http.ResponseWriter, req *http.Request) {
+	session, err := store.Get(req, "session")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	session.Values["username"] = ""
+	if err := session.Save(req, w); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	http.Redirect(w, req, "/", 302)
 }
 
 //http://stackoverflow.com/questions/36323232/golang-css-files-are-being-sent-with-content-type-text-plain
