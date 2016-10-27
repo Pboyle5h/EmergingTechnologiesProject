@@ -17,7 +17,7 @@ import (
 var store = sessions.NewCookieStore([]byte("secret"))
 
 var tpl *template.Template
-
+var mongoConnection, err = newMongoConnection()
 func init() {
 	tpl = template.Must(template.ParseGlob("public/templates/index.html"))
 }
@@ -41,6 +41,18 @@ func display(w http.ResponseWriter, req *http.Request) {
 		log.Fatalln(err)
 	}
 
+}
+
+
+func newMongoConnection() (*mgo.Session, error){
+	// Connect to our local mongo
+	s, err := mgo.Dial("mongodb://test:test@ds035006.mlab.com:35006/heroku_lzbj5rj0")
+
+	// Check if connection error, is mongo running?
+	if err != nil {
+		panic(err)
+	}
+	return s,err
 }
 
 type (
@@ -129,19 +141,10 @@ func serveResource(w http.ResponseWriter, req *http.Request) {
 }
 
 //adapted from https://stevenwhite.com/building-a-rest-service-with-golang-3/ used to make connection to mongoDB database
-func insert(a User) *mgo.Session {
-	// Connect to our local mongo
-	s, err := mgo.Dial("mongodb://test:test@ds035006.mlab.com:35006/heroku_lzbj5rj0")
-
-	// Check if connection error, is mongo running?
-	if err != nil {
-		panic(err)
-	}
-	c := s.DB("heroku_lzbj5rj0").C("Users")
+func insert(a User) {
+	c := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
 	err = c.Insert(&User{a.Name, a.Username, a.Password, a.Email})
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	return s
 }
