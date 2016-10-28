@@ -23,6 +23,8 @@ func init() {
 }
 
 func main() {
+	port := os.Getenv("PORT")
+
 	r := mux.NewRouter()
 	r.HandleFunc("/", display)
 	r.HandleFunc("/register", Register)
@@ -30,7 +32,11 @@ func main() {
 	//r.HandleFunc("/css/", serveResource)
 	http.Handle("/", r)
 	http.HandleFunc("/css/", serveResource)
-	http.ListenAndServe(":4000", nil)
+	if port == "" {
+		http.ListenAndServe(":4000", nil)
+	} else {
+		http.ListenAndServe(":"+port, nil)
+	}
 
 }
 
