@@ -1,1 +1,1 @@
-web: FinalYearProject -p $PORT
+web: Project -p $PORT
