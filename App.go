@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"strings"
-
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"gopkg.in/mgo.v2"
