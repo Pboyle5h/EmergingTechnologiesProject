@@ -7,10 +7,12 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"fmt"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // all session code adapted from http://www.gorillatoolkit.org/pkg/sessions
@@ -97,18 +99,38 @@ func Register(w http.ResponseWriter, req *http.Request) {
 func loginHandler(w http.ResponseWriter, req *http.Request) {
 	username := req.FormValue("username")
 	password := req.FormValue("password")
-
 	/* WE NEED TO ADD MONGO CHECKING HERE AS WELL */
 	//if err := session.DB(authDB).Login(user, pass); err == nil {
-	session, err := store.Get(req, "session")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if loginValidation(username, password){
+		session, err := store.Get(req, "session")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		session.Values["username"] = username
+		session.Values["password"] = password
+		session.Save(req, w)
+		//}
+		http.Redirect(w, req, "/", 302)
+	}else{
+		fmt.Println("Invalid login")
+		// TODO: notify user of invalid username password
 	}
-	session.Values["username"] = username
-	session.Values["password"] = password
-	session.Save(req, w)
-	//}
-	http.Redirect(w, req, "/", 302)
+}
+
+func loginValidation(username string ,password string) bool {
+	c := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
+	result := User{}
+	err = c.Find(bson.M{"username": username}).Select(bson.M{"username": 1,"password": 1, "_id": 0 }).One(&result)
+	if err != nil {
+		// TODO: This exits the cript if the query fails to find the user, needs to be changed
+		log.Fatal(err)
+	}
+	if result.Username == username && result.Password == password {
+		fmt.Println("Connection succesful")
+		return true
+	}else{
+		return false
+	}
 }
 
 func logoutHandler(w http.ResponseWriter, req *http.Request) {
