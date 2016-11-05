@@ -1,13 +1,9 @@
 package main
 
 import (
-	"bufio"
-	"html/template"
+	"fmt"
 	"log"
 	"net/http"
-	"os"
-	"strings"
-	"fmt"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
@@ -17,42 +13,57 @@ import (
 
 // all session code adapted from http://www.gorillatoolkit.org/pkg/sessions
 var store = sessions.NewCookieStore([]byte("secret"))
-
-var tpl *template.Template
 var mongoConnection, err = newMongoConnection()
-func init() {
-	tpl = template.Must(template.ParseGlob("public/templates/index.html"))
+
+// adapted from https://www.reddit.com/r/golang/comments/2tp5ho/updated_my_ggap_stack_web_app_tutorial_slothful/
+
+func indexRoute(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "views/index.html")
 }
 
 func main() {
-	port := os.Getenv("PORT")
+	// adapted from https://www.reddit.com/r/golang/comments/2tp5ho/updated_my_ggap_stack_web_app_tutorial_slothful/
+	router := initRouter()
 
+	server := &http.Server{
+		Addr:    ":4000",
+		Handler: router,
+	}
+
+	fmt.Println("Starting server")
+	server.ListenAndServe()
+}
+
+// adapted from https://www.reddit.com/r/golang/comments/2tp5ho/updated_my_ggap_stack_web_app_tutorial_slothful/
+func FileServerRouteG(m *mux.Router, path, dir string) {
+	m.PathPrefix(path).Handler(
+		http.StripPrefix(path, http.FileServer(http.Dir(dir))))
+}
+
+// adapted from https://www.reddit.com/r/golang/comments/2tp5ho/updated_my_ggap_stack_web_app_tutorial_slothful/
+func AddStaticRoutes(m *mux.Router, pathsAndDirs ...string) {
+	for i := 0; i < len(pathsAndDirs)-1; i += 2 {
+		FileServerRouteG(m, pathsAndDirs[i], pathsAndDirs[i+1])
+	}
+}
+
+// adapted from https://www.reddit.com/r/golang/comments/2tp5ho/updated_my_ggap_stack_web_app_tutorial_slothful/
+func initRouter() *mux.Router {
 	r := mux.NewRouter()
-	r.HandleFunc("/", display)
-	r.HandleFunc("/register", Register)
-	r.HandleFunc("/login", loginHandler)
-	//r.HandleFunc("/css/", serveResource)
-	http.Handle("/", r)
-	http.HandleFunc("/css/", serveResource)
-	if port == "" {
-		http.ListenAndServe(":4000", nil)
-	} else {
-		http.ListenAndServe(":"+port, nil)
-	}
 
+	//Add static routes for the public directory
+	AddStaticRoutes(r, "/partials/", "public/partials",
+		"/scripts/", "public/scripts", "/styles/", "public/styles",
+		"/images/", "public/images")
+
+	//Serve all other requests with index.html, and ultimately the front-end
+	//Angular.js app.
+	r.PathPrefix("/").HandlerFunc(indexRoute)
+
+	return r
 }
 
-func display(w http.ResponseWriter, req *http.Request) {
-	err := tpl.Execute(w, "index.html")
-	if err != nil {
-		http.Error(w, err.Error(), 500)
-		log.Fatalln(err)
-	}
-
-}
-
-
-func newMongoConnection() (*mgo.Session, error){
+func newMongoConnection() (*mgo.Session, error) {
 	// Connect to our local mongo
 	s, err := mgo.Dial("mongodb://test:test@ds035006.mlab.com:35006/heroku_lzbj5rj0")
 
@@ -60,7 +71,7 @@ func newMongoConnection() (*mgo.Session, error){
 	if err != nil {
 		panic(err)
 	}
-	return s,err
+	return s, err
 }
 
 type (
@@ -101,7 +112,7 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 	password := req.FormValue("password")
 	/* WE NEED TO ADD MONGO CHECKING HERE AS WELL */
 	//if err := session.DB(authDB).Login(user, pass); err == nil {
-	if loginValidation(username, password){
+	if loginValidation(username, password) {
 		session, err := store.Get(req, "session")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -111,16 +122,16 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 		session.Save(req, w)
 		//}
 		http.Redirect(w, req, "/", 302)
-	}else{
+	} else {
 		fmt.Println("Invalid login")
 		// TODO: notify user of invalid username password
 	}
 }
 
-func loginValidation(username string ,password string) bool {
+func loginValidation(username string, password string) bool {
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
 	result := User{}
-	err = c.Find(bson.M{"username": username}).Select(bson.M{"username": 1,"password": 1, "_id": 0 }).One(&result)
+	err = c.Find(bson.M{"username": username}).Select(bson.M{"username": 1, "password": 1, "_id": 0}).One(&result)
 	if err != nil {
 		// TODO: This exits the cript if the query fails to find the user, needs to be changed
 		log.Fatal(err)
@@ -128,7 +139,7 @@ func loginValidation(username string ,password string) bool {
 	if result.Username == username && result.Password == password {
 		fmt.Println("Connection succesful")
 		return true
-	}else{
+	} else {
 		return false
 	}
 }
@@ -145,27 +156,6 @@ func logoutHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	http.Redirect(w, req, "/", 302)
-}
-
-//http://stackoverflow.com/questions/36323232/golang-css-files-are-being-sent-with-content-type-text-plain
-func serveResource(w http.ResponseWriter, req *http.Request) {
-	path := "public" + req.URL.Path
-	var contentType string
-	if strings.HasSuffix(path, ".css") {
-		contentType = "text/css"
-	}
-
-	f, err := os.Open(path)
-
-	if err == nil {
-		defer f.Close()
-		w.Header().Add("Content-Type", contentType)
-
-		br := bufio.NewReader(f)
-		br.WriteTo(w)
-	} else {
-		w.WriteHeader(404)
-	}
 }
 
 //adapted from https://stevenwhite.com/building-a-rest-service-with-golang-3/ used to make connection to mongoDB database
