@@ -66,7 +66,7 @@ func initRouter() *mux.Router {
 func newMongoConnection() (*mgo.Session, error) {
 	// Connect to our local mongo
 	s, err := mgo.Dial("mongodb://test:test@ds035006.mlab.com:35006/heroku_lzbj5rj0")
-
+	fmt.Println("Mongo connected")
 	// Check if connection error, is mongo running?
 	if err != nil {
 		panic(err)
@@ -108,6 +108,7 @@ func Register(w http.ResponseWriter, req *http.Request) {
 
 // adapted from https://devcenter.heroku.com/articles/go-sessions
 func loginHandler(w http.ResponseWriter, req *http.Request) {
+	fmt.Println("Login handler started")
 	username := req.FormValue("username")
 	password := req.FormValue("password")
 	/* WE NEED TO ADD MONGO CHECKING HERE AS WELL */
@@ -129,6 +130,7 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func loginValidation(username string, password string) bool {
+	fmt.Println("Login validation started")
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
 	result := User{}
 	err = c.Find(bson.M{"username": username}).Select(bson.M{"username": 1, "password": 1, "_id": 0}).One(&result)
