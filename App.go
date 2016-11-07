@@ -31,6 +31,7 @@ func main() {
 	}
 
 	fmt.Println("Starting server")
+
 	server.ListenAndServe()
 }
 
@@ -51,6 +52,7 @@ func AddStaticRoutes(m *mux.Router, pathsAndDirs ...string) {
 func initRouter() *mux.Router {
 	r := mux.NewRouter()
 
+	r.HandleFunc("/register", RegisterHandler)
 	//Add static routes for the public directory
 	AddStaticRoutes(r, "/partials/", "public/partials",
 		"/scripts/", "public/scripts", "/styles/", "public/styles",
@@ -59,7 +61,6 @@ func initRouter() *mux.Router {
 	//Serve all other requests with index.html, and ultimately the front-end
 	//Angular.js app.
 	r.PathPrefix("/").HandlerFunc(indexRoute)
-
 	return r
 }
 
@@ -83,8 +84,7 @@ type (
 	}
 )
 
-func Register(w http.ResponseWriter, req *http.Request) {
-
+func RegisterHandler(w http.ResponseWriter, req *http.Request) {
 	u := req.FormValue("username")
 	p := req.FormValue("password")
 	e := req.FormValue("email")
