@@ -52,7 +52,7 @@ func AddStaticRoutes(m *mux.Router, pathsAndDirs ...string) {
 func initRouter() *mux.Router {
 	r := mux.NewRouter()
 
-	r.HandleFunc("/register", RegisterHandler)
+	r.Handle("/register", http.HandlerFunc(RegisterHandler)).Methods("POST")
 	//Add static routes for the public directory
 	AddStaticRoutes(r, "/partials/", "public/partials",
 		"/scripts/", "public/scripts", "/styles/", "public/styles",
@@ -89,7 +89,7 @@ func RegisterHandler(w http.ResponseWriter, req *http.Request) {
 	p := req.FormValue("password")
 	e := req.FormValue("email")
 	n := req.FormValue("name")
-
+	//fmt.Println(u)
 	session, err := store.Get(req, "session")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

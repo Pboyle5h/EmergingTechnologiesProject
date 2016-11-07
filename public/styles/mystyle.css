@@ -31,3 +31,8 @@ p {
   margin: 0;
   font-size: 1.5rem;
 }
+
+.registerForm{
+  margin: 100px auto;
+  background-color: #ffffcc;
+}

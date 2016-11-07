@@ -4,7 +4,9 @@ var blog = angular.module('blogApp', ['ngRoute']);
 blog.config(function($routeProvider, $locationProvider){
   $routeProvider
   .when('/', {templateUrl: '/partials/main.html'})
-  .when('/blogs', {templateUrl: '/partials/blogs.html'});
+  .when('/blogs', {templateUrl: '/partials/blogs.html'})
+  .when('/register', {templateUrl: '/partials/register.html'})
+  .when('/login', {templateUrl: '/partials/login.html'});
 
   $locationProvider.html5Mode(true); // takes the # out of the url
 });
