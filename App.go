@@ -1,13 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
-	"gopkg.in/mgo.v2"
+	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -52,7 +53,9 @@ func AddStaticRoutes(m *mux.Router, pathsAndDirs ...string) {
 func initRouter() *mux.Router {
 	r := mux.NewRouter()
 
-	r.Handle("/register", http.HandlerFunc(RegisterHandler)).Methods("POST")
+	// adapted from https://auth0.com/blog/authentication-in-golang/
+	r.Handle("/register", http.HandlerFunc(Register)).Methods("POST")
+	r.Handle("/login", http.HandlerFunc(loginHandler)).Methods("POST")
 	//Add static routes for the public directory
 	AddStaticRoutes(r, "/partials/", "public/partials",
 		"/scripts/", "public/scripts", "/styles/", "public/styles",
@@ -84,51 +87,80 @@ type (
 	}
 )
 
-func RegisterHandler(w http.ResponseWriter, req *http.Request) {
-	u := req.FormValue("username")
-	p := req.FormValue("password")
-	e := req.FormValue("email")
-	n := req.FormValue("name")
-	//fmt.Println(u)
-	session, err := store.Get(req, "session")
+func Register(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var user User
+	err := decoder.Decode(&user)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		fmt.Println("not working")
 	}
-	session.Values["username"] = u
-	session.Values["password"] = p
-	session.Save(req, w)
+	defer r.Body.Close()
+	u := user.Username
+	p := user.Password
+	e := user.Email
+	n := user.Name
 
 	a := User{Username: u, Password: p, Email: e, Name: n}
 	if a.Username != "" || a.Password != "" || a.Email != "" || a.Name != "" {
 		insert(a)
 	}
 
-	http.Redirect(w, req, "/", 302)
+	//http.Redirect(w, r, "/", 302)
 }
 
-// adapted from https://devcenter.heroku.com/articles/go-sessions
-func loginHandler(w http.ResponseWriter, req *http.Request) {
-	fmt.Println("Login handler started")
-	username := req.FormValue("username")
-	password := req.FormValue("password")
-	/* WE NEED TO ADD MONGO CHECKING HERE AS WELL */
-	//if err := session.DB(authDB).Login(user, pass); err == nil {
-	if loginValidation(username, password) {
-		session, err := store.Get(req, "session")
+type (
+	LoginCreds struct {
+		Username string
+		Password string
+	}
+)
+
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var login LoginCreds
+	err := decoder.Decode(&login)
+	if err != nil {
+		fmt.Println("not working")
+	}
+	//fmt.Println(login.Username)
+	defer r.Body.Close()
+	if loginValidation(login.Username, login.Password) {
+		fmt.Println("success")
+		session, err := store.Get(r, "session")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-		session.Values["username"] = username
-		session.Values["password"] = password
-		session.Save(req, w)
-		//}
-		http.Redirect(w, req, "/", 302)
+		session.Values["username"] = login.Username
+		session.Values["password"] = login.Password
+		session.Save(r, w)
 	} else {
-		fmt.Println("Invalid login")
-		// TODO: notify user of invalid username password
+		fmt.Println("invalid creds")
 	}
 }
 
+// adapted from https://devcenter.heroku.com/articles/go-sessions
+// func loginHandler(w http.ResponseWriter, req *http.Request) {
+// 	fmt.Println("Login handler started")
+// 	username := req.FormValue("username")
+// 	password := req.FormValue("password")
+// 	/* WE NEED TO ADD MONGO CHECKING HERE AS WELL */
+// 	//if err := session.DB(authDB).Login(user, pass); err == nil {
+// 	if loginValidation(username, password) {
+// 		session, err := store.Get(req, "session")
+// 		if err != nil {
+// 			http.Error(w, err.Error(), http.StatusInternalServerError)
+// 		}
+// 		session.Values["username"] = username
+// 		session.Values["password"] = password
+// 		session.Save(req, w)
+// 		//}
+// 		http.Redirect(w, req, "/", 302)
+// 	} else {
+// 		fmt.Println("Invalid login")
+// 		// TODO: notify user of invalid username password
+// 	}
+// }
+//
 func loginValidation(username string, password string) bool {
 	fmt.Println("Login validation started")
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Users")

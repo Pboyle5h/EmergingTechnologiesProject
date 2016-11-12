@@ -1,12 +1,12 @@
-<div class="container registerForm">
-   <form action="/login" method="POST">
+<div class="container registerForm" ng-controller="LoginCtrl">
+   <form ng-submit="login()">
          <label for="username">username</label>
-         <input type="text" id="username" name="username">
+         <input type="text" id="username" name="username" ng-model="username" >
          <br>
          <label for="password">password</label>
-         <input type="text" id="password" name="password">
+         <input type="password" id="password" name="password" ng-model="password">
          <br>
+         <label ng-show="invalidLogin()"></label>
          <button type="submit" class="btn btn-primary" >Submit</button>
-         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
    </form>
 </div>

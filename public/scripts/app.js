@@ -10,3 +10,38 @@ blog.config(function($routeProvider, $locationProvider){
 
   $locationProvider.html5Mode(true); // takes the # out of the url
 });
+
+// blog.controller('MainCtrl', function($scope){
+//   $scope.isAuth = function(){
+//     $scope.isAuth
+//   }
+// })
+blog.controller('RegisterCtrl', function($scope, $http, $window){
+  //console.log("called")
+  $scope.register = function() {
+    $http.post('/register', {Name: $scope.name, Username: $scope.username,
+                     Email: $scope.email, Password: $scope.password}).
+      error(logError).
+      success(function(data) {
+        $window.location.href="/";
+      });
+  };
+});
+
+blog.controller('LoginCtrl', function($scope, $http, $window){
+  $scope.login = function(){
+    $http.post('/login', {Username : $scope.username, Password : $scope.password}).
+      error(function(){
+        logError;
+      }).
+      success(function(){
+        //$cookieStore.put('access_token', data.Access_token);
+        //$cookieStore.put('refresh_token', data.Refresh_token);
+        $window.location.href="/user";
+      });
+  };
+});
+
+var logError = function(data, status) {
+   console.log('code '+status+': '+data);
+ };
