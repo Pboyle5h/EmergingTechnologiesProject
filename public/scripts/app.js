@@ -6,7 +6,8 @@ blog.config(function($routeProvider, $locationProvider){
   .when('/', {templateUrl: '/partials/main.html'})
   .when('/blogs', {templateUrl: '/partials/blogs.html'})
   .when('/register', {templateUrl: '/partials/register.html'})
-  .when('/login', {templateUrl: '/partials/login.html'});
+  .when('/login', {templateUrl: '/partials/login.html'})
+  .when('/user', {templateUrl: '/partials/user.html'});
 
   $locationProvider.html5Mode(true); // takes the # out of the url
 });
@@ -38,6 +39,51 @@ blog.controller('LoginCtrl', function($scope, $http, $window){
       });
   };
 });
+
+blog.controller('BlogController', ['$http', function($http){
+
+   var blog = this;
+   blog.title = "Blogs";
+
+   blog.posts = {};
+   $http.get('https://s3-us-west-2.amazonaws.com/s.cdpn.io/110131/posts_1.json').success(function(data){
+     blog.posts = data;
+   });
+  // $http.get('/blogs').success(function(data) {
+  //   blog.posts = data;
+  // })
+
+   blog.tab = 'blog';
+
+   blog.selectTab = function(setTab){
+     blog.tab = setTab;
+     console.log(blog.tab)
+   };
+
+   blog.isSelected = function(checkTab){
+     return blog.tab === checkTab;
+   };
+
+   blog.post = {};
+   blog.addPost = function(){
+     blog.post.createdOn = Date.now();
+     blog.post.comments = [];
+     blog.post.likes = 0;
+     blog.posts.unshift(this.post);
+     blog.tab = 0;
+     blog.post ={};
+   };
+
+ }]);
+
+ blog.controller('CommentController', function(){
+   this.comment = {};
+   this.addComment = function(post){
+     this.comment.createdOn = Date.now();
+     post.comments.push(this.comment);
+     this.comment ={};
+   };
+ });
 
 var logError = function(data, status) {
    console.log('code '+status+': '+data);
