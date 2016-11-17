@@ -40,6 +40,7 @@ blog.controller('LoginCtrl', function($scope, $http, $window){
   };
 });
 
+// adapted from https://codepen.io/nickmoreton/pen/mgtLK
 blog.controller('BlogController', ['$http', function($http){
 
    var blog = this;

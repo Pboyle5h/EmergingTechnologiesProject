@@ -115,6 +115,7 @@ type (
 	}
 )
 
+// adapted from https://devcenter.heroku.com/articles/go-sessions
 func loginHandler(w http.ResponseWriter, r *http.Request) error {
 	decoder := json.NewDecoder(r.Body)
 	var login LoginCreds
@@ -139,29 +140,6 @@ func loginHandler(w http.ResponseWriter, r *http.Request) error {
 	return err
 }
 
-// adapted from https://devcenter.heroku.com/articles/go-sessions
-// func loginHandler(w http.ResponseWriter, req *http.Request) {
-// 	fmt.Println("Login handler started")
-// 	username := req.FormValue("username")
-// 	password := req.FormValue("password")
-// 	/* WE NEED TO ADD MONGO CHECKING HERE AS WELL */
-// 	//if err := session.DB(authDB).Login(user, pass); err == nil {
-// 	if loginValidation(username, password) {
-// 		session, err := store.Get(req, "session")
-// 		if err != nil {
-// 			http.Error(w, err.Error(), http.StatusInternalServerError)
-// 		}
-// 		session.Values["username"] = username
-// 		session.Values["password"] = password
-// 		session.Save(req, w)
-// 		//}
-// 		http.Redirect(w, req, "/", 302)
-// 	} else {
-// 		fmt.Println("Invalid login")
-// 		// TODO: notify user of invalid username password
-// 	}
-// }
-//
 func loginValidation(username string, password string) error {
 	fmt.Println("Login validation started")
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
