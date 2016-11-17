@@ -11,11 +11,7 @@ blog.config(function($routeProvider, $locationProvider){
   $locationProvider.html5Mode(true); // takes the # out of the url
 });
 
-// blog.controller('MainCtrl', function($scope){
-//   $scope.isAuth = function(){
-//     $scope.isAuth
-//   }
-// })
+
 blog.controller('RegisterCtrl', function($scope, $http, $window){
   //console.log("called")
   $scope.register = function() {
@@ -33,10 +29,11 @@ blog.controller('LoginCtrl', function($scope, $http, $window){
     $http.post('/login', {Username : $scope.username, Password : $scope.password}).
       error(function(){
         logError;
+        //console.log("error");
+        $scope.invalidLogin = !$scope.invalidLogin;
       }).
       success(function(){
-        //$cookieStore.put('access_token', data.Access_token);
-        //$cookieStore.put('refresh_token', data.Refresh_token);
+        //console.log("success");
         $window.location.href="/user";
       });
   };

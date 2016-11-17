@@ -6,7 +6,7 @@
          <label for="password">password</label>
          <input type="password" id="password" name="password" ng-model="password">
          <br>
-         <label ng-show="invalidLogin()"></label>
+         <label ng-hide="!invalidLogin">Invalid Credentials</label>
          <button type="submit" class="btn btn-primary" >Submit</button>
    </form>
 </div>

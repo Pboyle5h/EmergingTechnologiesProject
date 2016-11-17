@@ -54,8 +54,8 @@ func initRouter() *mux.Router {
 	r := mux.NewRouter()
 
 	// adapted from https://auth0.com/blog/authentication-in-golang/
-	r.Handle("/register", http.HandlerFunc(Register)).Methods("POST")
-	r.Handle("/login", http.HandlerFunc(loginHandler)).Methods("POST")
+	r.Handle("/register", errorHandler(Register)).Methods("POST")
+	r.Handle("/login", errorHandler(loginHandler)).Methods("POST")
 	//Add static routes for the public directory
 	AddStaticRoutes(r, "/partials/", "public/partials",
 		"/scripts/", "public/scripts", "/styles/", "public/styles",
@@ -87,12 +87,12 @@ type (
 	}
 )
 
-func Register(w http.ResponseWriter, r *http.Request) {
+func Register(w http.ResponseWriter, r *http.Request) error {
 	decoder := json.NewDecoder(r.Body)
 	var user User
 	err := decoder.Decode(&user)
 	if err != nil {
-		fmt.Println("not working")
+		return err
 	}
 	defer r.Body.Close()
 	u := user.Username
@@ -104,7 +104,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	if a.Username != "" || a.Password != "" || a.Email != "" || a.Name != "" {
 		insert(a)
 	}
-
+	return err
 	//http.Redirect(w, r, "/", 302)
 }
 
@@ -115,17 +115,17 @@ type (
 	}
 )
 
-func loginHandler(w http.ResponseWriter, r *http.Request) {
+func loginHandler(w http.ResponseWriter, r *http.Request) error {
 	decoder := json.NewDecoder(r.Body)
 	var login LoginCreds
 	err := decoder.Decode(&login)
 	if err != nil {
-		fmt.Println("not working")
+		return err
 	}
 	//fmt.Println(login.Username)
 	defer r.Body.Close()
-	if loginValidation(login.Username, login.Password) {
-		fmt.Println("success")
+	if err := loginValidation(login.Username, login.Password); err == nil {
+		//fmt.Println("success")
 		session, err := store.Get(r, "session")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -134,8 +134,9 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		session.Values["password"] = login.Password
 		session.Save(r, w)
 	} else {
-		fmt.Println("invalid creds")
+		return err
 	}
+	return err
 }
 
 // adapted from https://devcenter.heroku.com/articles/go-sessions
@@ -161,20 +162,20 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 // 	}
 // }
 //
-func loginValidation(username string, password string) bool {
+func loginValidation(username string, password string) error {
 	fmt.Println("Login validation started")
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
 	result := User{}
 	err = c.Find(bson.M{"username": username}).Select(bson.M{"username": 1, "password": 1, "_id": 0}).One(&result)
 	if err != nil {
 		// TODO: This exits the cript if the query fails to find the user, needs to be changed
-		log.Fatal(err)
+		//log.Fatal(err)
 	}
 	if result.Username == username && result.Password == password {
 		fmt.Println("Connection succesful")
-		return true
+		return err
 	} else {
-		return false
+		return err
 	}
 }
 
@@ -198,5 +199,30 @@ func insert(a User) {
 	err = c.Insert(&User{a.Name, a.Username, a.Password, a.Email})
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+// adapted from https://github.com/campoy/todo/blob/master/server/server.go
+// badRequest is handled by setting the status code in the reply to StatusBadRequest.
+type badRequest struct{ error }
+
+// notFound is handled by setting the status code in the reply to StatusNotFound.
+type notFound struct{ error }
+
+func errorHandler(f func(w http.ResponseWriter, r *http.Request) error) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		err := f(w, r)
+		if err == nil {
+			return
+		}
+		switch err.(type) {
+		case badRequest:
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		case notFound:
+			http.Error(w, "task not found", http.StatusNotFound)
+		default:
+			log.Println(err)
+			http.Error(w, "oops", http.StatusInternalServerError)
+		}
 	}
 }
