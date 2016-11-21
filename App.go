@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -56,6 +57,7 @@ func initRouter() *mux.Router {
 	// adapted from https://auth0.com/blog/authentication-in-golang/
 	r.Handle("/register", errorHandler(Register)).Methods("POST")
 	r.Handle("/login", errorHandler(loginHandler)).Methods("POST")
+	r.Handle("/blogs", errorHandler(getBlogs)).Methods("GET")
 	//Add static routes for the public directory
 	AddStaticRoutes(r, "/partials/", "public/partials",
 		"/scripts/", "public/scripts", "/styles/", "public/styles",
@@ -178,6 +180,24 @@ func insert(a User) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+type Blog struct {
+	Title  string
+	Body   string
+	Author string
+}
+
+var blogs = []Blog{
+	Blog{Title: "title", Body: "body", Author: "Author"},
+	Blog{Title: "title", Body: "body", Author: "Author"},
+}
+
+func getBlogs(w http.ResponseWriter, r *http.Request) error {
+
+	json.NewEncoder(w).Encode(blogs)
+
+	return errors.New("empty")
 }
 
 // adapted from https://github.com/campoy/todo/blob/master/server/server.go
