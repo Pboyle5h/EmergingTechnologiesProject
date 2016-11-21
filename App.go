@@ -183,14 +183,24 @@ func insert(a User) {
 }
 
 type Blog struct {
-	Title  string
-	Body   string
-	Author string
+	title    string
+	body     string
+	author   string
+	comments []Comment
+	likes    int
 }
 
+type Comment struct {
+	author string
+	body   string
+}
+
+var comments = []Comment{
+	Comment{author: "Comment Author", body: "Comment Body"},
+}
 var blogs = []Blog{
-	Blog{Title: "title", Body: "body", Author: "Author"},
-	Blog{Title: "title", Body: "body", Author: "Author"},
+	Blog{title: "title", body: "body", author: "Author", comments: comments, likes: 0},
+	Blog{title: "title", body: "body", author: "Author", comments: comments, likes: 0},
 }
 
 func getBlogs(w http.ResponseWriter, r *http.Request) error {

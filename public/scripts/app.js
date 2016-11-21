@@ -59,7 +59,7 @@ blog.controller('BlogController', ['$http', function($http){
 
    blog.selectTab = function(setTab){
      blog.tab = setTab;
-     console.log(blog.tab)
+     console.log(blog.tab);
    };
 
    blog.isSelected = function(checkTab){
