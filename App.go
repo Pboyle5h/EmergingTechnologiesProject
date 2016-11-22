@@ -57,6 +57,7 @@ func initRouter() *mux.Router {
 	// adapted from https://auth0.com/blog/authentication-in-golang/
 	r.Handle("/register", errorHandler(Register)).Methods("POST")
 	r.Handle("/login", errorHandler(loginHandler)).Methods("POST")
+	r.Handle("/blogs", errorHandler(getBlogs)).Methods("GET")
 	//Add static routes for the public directory
 	AddStaticRoutes(r, "/partials/", "public/partials",
 		"/scripts/", "public/scripts", "/styles/", "public/styles",
@@ -81,10 +82,10 @@ func newMongoConnection() (*mgo.Session, error) {
 
 type (
 	User struct {
-		Name     string
-		Username string
-		Password string
-		Email    string
+		Name      string
+		Username  string
+		Password  string
+		Email     string
 		Blogposts []string
 	}
 )
@@ -178,23 +179,45 @@ func logoutHandler(w http.ResponseWriter, req *http.Request) {
 
 type (
 	Blog struct {
-		uniqueID	string
-		title string
-		body string
-		author    string
-		comments []string
-		likes string
-		createdOn  int
+		_id       bson.ObjectId `bson:"_id"`
+		UniqueId  string        `json:"unique_id"`
+		Title     string        `json:"title"`
+		Body      string        `json:"body"`
+		Author    string        `json:"author"`
+		Comments  []Comment     `json:"comments"`
+		Likes     int           `json:"likes"`
+		CreatedOn int           `json:"createOn"`
 	}
 )
 
+type (
+	Comment struct {
+		Body   string `json:"body"`
+		Author string `json:"author"`
+	}
+)
+
+func getBlogs(w http.ResponseWriter, r *http.Request) error {
+	var results []Blog
+	c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
+	//c.Find(nil).All(&results)
+	//fmt.Println(results)
+	//json.NewEncoder(w).Encode(blogs)
+	mErr := c.Find(nil).All(&results)
+	if err != nil {
+		return mErr
+	}
+	//fmt.Println(results)
+	json.NewEncoder(w).Encode(results)
+	return nil
+}
 func getUserBlogs() error {
 	fmt.Println("Getting user blogs started")
-	currentUser ="aaa"
+	currentUser = "aaa"
 
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
 	resultingBlogID := User{}
-	err = c.Find(bson.M{"username": currentUser}).Select(bson.M{ "blogposts" : 1, "_id": 0}).One(&resultingBlogID)
+	err = c.Find(bson.M{"username": currentUser}).Select(bson.M{"blogposts": 1, "_id": 0}).One(&resultingBlogID)
 	if err != nil {
 		// TODO: This exits the cript if the query fails to find the user, needs to be changed
 		log.Fatal(err)
@@ -214,7 +237,7 @@ func getUserBlogs() error {
 //adapted from https://stevenwhite.com/building-a-rest-service-with-golang-3/ used to make connection to mongoDB database
 func insert(a User) {
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
-	err = c.Insert(&User{a.Name, a.Username, a.Password, a.Email , nil})
+	err = c.Insert(&User{a.Name, a.Username, a.Password, a.Email, nil})
 	if err != nil {
 		log.Fatal(err)
 	}

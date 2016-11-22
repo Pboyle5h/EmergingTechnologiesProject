@@ -47,12 +47,12 @@ blog.controller('BlogController', ['$http', function($http){
    blog.title = "Blogs";
 
    blog.posts = {};
-   $http.get('https://s3-us-west-2.amazonaws.com/s.cdpn.io/110131/posts_1.json').success(function(data){
-     blog.posts = data;
-   });
-  // $http.get('/blogs').success(function(data) {
-  //   blog.posts = data;
-  // })
+  //  $http.get('https://s3-us-west-2.amazonaws.com/s.cdpn.io/110131/posts_1.json').success(function(data){
+  //    blog.posts = data;
+  //  });
+  $http.get('/blogs').success(function(data) {
+    blog.posts = data;
+  });
 
    blog.tab = 'blog';
 
