@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -182,32 +181,39 @@ func insert(a User) {
 	}
 }
 
-type Blog struct {
-	title    string
-	body     string
-	author   string
-	comments []Comment
-	likes    int
-}
+type (
+	Blog struct {
+		_id       bson.ObjectId `bson:"_id"`
+		UniqueId  string        `json:"unique_id"`
+		Title     string        `json:"title"`
+		Body      string        `json:"body"`
+		Author    string        `json:"author"`
+		Comments  []Comment     `json:"comments"`
+		Likes     int           `json:"likes"`
+		CreatedOn int           `json:"createOn"`
+	}
+)
 
-type Comment struct {
-	author string
-	body   string
-}
-
-var comments = []Comment{
-	Comment{author: "Comment Author", body: "Comment Body"},
-}
-var blogs = []Blog{
-	Blog{title: "title", body: "body", author: "Author", comments: comments, likes: 0},
-	Blog{title: "title", body: "body", author: "Author", comments: comments, likes: 0},
-}
+type (
+	Comment struct {
+		Author string `json:"author"`
+		Body   string `json:"body"`
+	}
+)
 
 func getBlogs(w http.ResponseWriter, r *http.Request) error {
-
-	json.NewEncoder(w).Encode(blogs)
-
-	return errors.New("empty")
+	var results []Blog
+	c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
+	//c.Find(nil).All(&results)
+	//fmt.Println(results)
+	//json.NewEncoder(w).Encode(blogs)
+	err := c.Find(nil).All(&results)
+	if err != nil {
+		return err
+	}
+	fmt.Println(results)
+	json.NewEncoder(w).Encode(results)
+	return nil
 }
 
 // adapted from https://github.com/campoy/todo/blob/master/server/server.go
