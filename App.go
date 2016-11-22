@@ -224,14 +224,32 @@ func getUserBlogs() error {
 	}
 	if resultingBlogID.Blogposts != nil {
 		fmt.Println("received blog posts")
-		fmt.Println(resultingBlogID)
+
+		fmt.Println(len(resultingBlogID.Blogposts))
+		blogData := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
+		var resultBlogArray []Blog
+		resultBlog :=  Blog{}
+
+		for i := 0;  i <= len(resultingBlogID.Blogposts)-1 ; i++{
+				fmt.Println("uniqueID-> " +  resultingBlogID.Blogposts[i])
+				err = blogData.Find(bson.M{"uniqueID": resultingBlogID.Blogposts[i]}).One(&resultBlog)
+				if err != nil {
+					// TODO: This exits the cript if the query fails to find the user, needs to be changed
+					log.Fatal(err)
+				}
+				resultBlogArray = append(resultBlogArray, resultBlog)
+				fmt.Println(resultBlogArray[0])
+		}
+		/**
+		for (i := 0 ; i < 1; i ++){
+			resultBlogArray
+		}**/
+
 		return err
 	} else {
 		return err
 	}
-	//blogData := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
-	//resultingBlogs :=  []Blog{}
-	//err = c.Find(bson.M{"username": username}).Select(bson.M{"username": 1, "password": 1, "_id": 0}).One(&result)
+
 }
 
 //adapted from https://stevenwhite.com/building-a-rest-service-with-golang-3/ used to make connection to mongoDB database
