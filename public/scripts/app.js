@@ -12,7 +12,27 @@ blog.config(function($routeProvider, $locationProvider){
   $locationProvider.html5Mode(true); // takes the # out of the url
 });
 
-
+blog.controller('Ctrl', function Ctrl($scope, $timeout) {
+  
+  
+    var text1 = function() {       
+      $scope.text1= "DRIFTERS";
+    }
+    var text2 = function() {       
+      $scope.text2= "RACERS";
+    }
+    var text3 = function() {       
+      $scope.text3= "ADVENTURERS";
+    }
+    var text4 = function() {       
+      $scope.text4= "YOUR BLOG AWAITS...";
+    }
+    
+   $timeout(text1, 1000);
+   $timeout(text2, 2500);
+   $timeout(text3, 4000);
+   $timeout(text4, 5500);
+});
 blog.controller('RegisterCtrl', function($scope, $http, $window){
   //console.log("called")
   $scope.register = function() {
