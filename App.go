@@ -182,7 +182,7 @@ type (
 		_id       bson.ObjectId `bson:"_id"`
 		UniqueId  string        `json:"unique_id"`
 		Title     string        `json:"title"`
-		Body      string        `json:"body"`
+		Body      []string      `json:"body"`
 		Author    string        `json:"author"`
 		Comments  []Comment     `json:"comments"`
 		Likes     int           `json:"likes"`
@@ -192,8 +192,8 @@ type (
 
 type (
 	Comment struct {
-		Body   string `json:"body"`
-		Author string `json:"author"`
+		Body   string `json:"cbody"`
+		Author string `json:"cauthor"`
 	}
 )
 
@@ -228,17 +228,17 @@ func getUserBlogs() error {
 		fmt.Println(len(resultingBlogID.Blogposts))
 		blogData := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
 		var resultBlogArray []Blog
-		resultBlog :=  Blog{}
+		resultBlog := Blog{}
 
-		for i := 0;  i <= len(resultingBlogID.Blogposts)-1 ; i++{
-				fmt.Println("uniqueID-> " +  resultingBlogID.Blogposts[i])
-				err = blogData.Find(bson.M{"uniqueID": resultingBlogID.Blogposts[i]}).One(&resultBlog)
-				if err != nil {
-					// TODO: This exits the cript if the query fails to find the user, needs to be changed
-					log.Fatal(err)
-				}
-				resultBlogArray = append(resultBlogArray, resultBlog)
-				fmt.Println(resultBlogArray[0])
+		for i := 0; i <= len(resultingBlogID.Blogposts)-1; i++ {
+			fmt.Println("uniqueID-> " + resultingBlogID.Blogposts[i])
+			err = blogData.Find(bson.M{"uniqueID": resultingBlogID.Blogposts[i]}).One(&resultBlog)
+			if err != nil {
+				// TODO: This exits the cript if the query fails to find the user, needs to be changed
+				log.Fatal(err)
+			}
+			resultBlogArray = append(resultBlogArray, resultBlog)
+			fmt.Println(resultBlogArray[0])
 		}
 		/**
 		for (i := 0 ; i < 1; i ++){
