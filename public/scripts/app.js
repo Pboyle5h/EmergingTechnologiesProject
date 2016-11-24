@@ -97,6 +97,63 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
    };
  });
 
+ blog.controller('UserBlogController', ['$http', '$window', function($http, $window){
+
+    var blog = this;
+    blog.title = "Blogs";
+
+    blog.posts = {};
+   //  $http.get('https://s3-us-west-2.amazonaws.com/s.cdpn.io/110131/posts_1.json').success(function(data){
+   //    blog.posts = data;
+   //  });
+   $http.get('/user').success(function(data) {
+     console.log(data);
+     blog.posts = data;
+   });
+
+    blog.tab = 'blog';
+
+    blog.selectTab = function(setTab){
+      blog.tab = setTab;
+      console.log(blog.tab)
+    };
+
+    blog.isSelected = function(checkTab){
+      return blog.tab === checkTab;
+    };
+
+    blog.post = {};
+  //  blog.addPost = function(){
+  //    blog.post.createdOn = Date.now();
+  //    blog.post.comments = [];
+  //    blog.post.likes = 0;
+  //    blog.posts.unshift(this.post);
+  //    blog.tab = 0;
+  //    blog.post ={};
+  //  };
+
+   blog.addPost = function(){
+     var uniqueid = (Math.random() * 1000).toString();
+     $http.post('/user', {UniqueId : uniqueid, Title: blog.post.title,
+       Body: blog.post.body, Author: blog.post.author, Comments: [], Likes: 0,
+       CreatedOn: Date.now()}).
+     error(logError).
+     success(function(){
+       $window.location.href="/blogs";
+     });
+     };
+
+  }]);
+
+  blog.controller('UserCommentController', function(){
+    this.comment = {};
+    this.addComment = function(post){
+      this.comment.createdOn = Date.now();
+      post.comments.push(this.comment);
+      this.comment ={};
+    };
+  });
+
 var logError = function(data, status) {
    console.log('code '+status+': '+data);
  };
