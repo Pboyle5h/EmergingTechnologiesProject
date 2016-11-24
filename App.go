@@ -58,6 +58,7 @@ func initRouter() *mux.Router {
 	r.Handle("/register", errorHandler(Register)).Methods("POST")
 	r.Handle("/login", errorHandler(loginHandler)).Methods("POST")
 	r.Handle("/blogs", errorHandler(getBlogs)).Methods("GET")
+	r.Handle("/blogs", errorHandler(createBlog)).Methods("POST")
 	//Add static routes for the public directory
 	AddStaticRoutes(r, "/partials/", "public/partials",
 		"/scripts/", "public/scripts", "/styles/", "public/styles",
@@ -179,14 +180,14 @@ func logoutHandler(w http.ResponseWriter, req *http.Request) {
 
 type (
 	Blog struct {
-		_id       bson.ObjectId `bson:"_id"`
-		UniqueId  string        `json:"unique_id"`
-		Title     string        `json:"title"`
-		Body      []string      `json:"body"`
-		Author    string        `json:"author"`
-		Comments  []Comment     `json:"comments"`
-		Likes     int           `json:"likes"`
-		CreatedOn int           `json:"createOn"`
+		//_id       bson.ObjectId `bson:"_id"`
+		UniqueId  string    `json:"unique_id"`
+		Title     string    `json:"title"`
+		Body      []string  `json:"body"`
+		Author    string    `json:"author"`
+		Comments  []Comment `json:"comments"`
+		Likes     int       `json:"likes"`
+		CreatedOn int       `json:"createOn"`
 	}
 )
 
@@ -196,6 +197,21 @@ type (
 		Author string `json:"cauthor"`
 	}
 )
+
+func createBlog(w http.ResponseWriter, r *http.Request) error {
+	decoder := json.NewDecoder(r.Body)
+	var blog Blog
+	err := decoder.Decode(&blog)
+	if err != nil {
+		return err
+	}
+	c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
+	err = c.Insert(&Blog{blog.UniqueId, blog.Title, blog.Body, blog.Author, blog.Comments, blog.Likes, blog.CreatedOn})
+	if err != nil {
+		log.Fatal(err)
+	}
+	return nil
+}
 
 func getBlogs(w http.ResponseWriter, r *http.Request) error {
 	var results []Blog

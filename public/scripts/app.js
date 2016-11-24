@@ -41,7 +41,7 @@ blog.controller('LoginCtrl', function($scope, $http, $window){
 });
 
 // adapted from https://codepen.io/nickmoreton/pen/mgtLK
-blog.controller('BlogController', ['$http', function($http){
+blog.controller('BlogController', ['$http', '$window', function($http, $window){
 
    var blog = this;
    blog.title = "Blogs";
@@ -66,14 +66,25 @@ blog.controller('BlogController', ['$http', function($http){
    };
 
    blog.post = {};
-   blog.addPost = function(){
-     blog.post.createdOn = Date.now();
-     blog.post.comments = [];
-     blog.post.likes = 0;
-     blog.posts.unshift(this.post);
-     blog.tab = 0;
-     blog.post ={};
-   };
+ //  blog.addPost = function(){
+ //    blog.post.createdOn = Date.now();
+ //    blog.post.comments = [];
+ //    blog.post.likes = 0;
+ //    blog.posts.unshift(this.post);
+ //    blog.tab = 0;
+ //    blog.post ={};
+ //  };
+
+  blog.addPost = function(){
+    var uniqueid = (Math.random() * 1000).toString();
+    $http.post('/blogs', {UniqueId : uniqueid, Title: blog.post.title,
+      Body: blog.post.body, Author: blog.post.author, Comments: [], Likes: 0,
+      CreatedOn: Date.now()}).
+    error(logError).
+    success(function(){
+      $window.location.href="/user";
+    });
+    };
 
  }]);
 
