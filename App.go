@@ -36,7 +36,12 @@ func main() {
 		server.ListenAndServe()
 		fmt.Println("Starting server")
 	} else {
-		http.ListenAndServe(":"+port, nil)
+		server := &http.Server{
+
+			Addr:    ":" + port,
+			Handler: router,
+		}
+		server.ListenAndServe()
 		fmt.Println("Starting server")
 	}
 
