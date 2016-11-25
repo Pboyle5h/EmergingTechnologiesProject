@@ -28,10 +28,10 @@ blog.controller('Ctrl', function Ctrl($scope, $timeout) {
       $scope.text4= "YOUR BLOG AWAITS...";
     }
     
-   $timeout(text1, 1000);
-   $timeout(text2, 2500);
-   $timeout(text3, 4000);
-   $timeout(text4, 5500);
+   $timeout(text1, 500);
+   $timeout(text2, 1000);
+   $timeout(text3, 1500);
+   $timeout(text4, 2000);
 });
 blog.controller('RegisterCtrl', function($scope, $http, $window){
   //console.log("called")

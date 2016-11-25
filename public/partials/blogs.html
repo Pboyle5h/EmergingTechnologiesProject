@@ -1,10 +1,10 @@
 
 
-  <div ng-controller="BlogController as blog" >
+  <div ng-controller="BlogController as blog">
       <div class="content">
         <div class="container">
           <div class="row">
-             
+             <button type="button" class="btn btn-primary btn-circle btn-xl" ng-click="blog.selectTab('new')"><i class="glyphicon glyphicon-plus"></i></button>
             <ul class="post-grid" ng-show="blog.isSelected('blog')">
           <li ng-repeat="post in blog.posts" class="col-s-4" ng-class="{ 'reset-s' : $index%3==0 }" ng-click="blog.selectTab($index)" >
             <h3>{{post.title}}</h3>
@@ -69,7 +69,7 @@
 
           </div>
         </div>
-        <button type="button" class="btn btn-primary btn-circle btn-xl" ng-click="blog.selectTab('new')"><i class="glyphicon glyphicon-plus"></i></button>
+        
        
    </div>
     

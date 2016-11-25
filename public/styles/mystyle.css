@@ -5,7 +5,7 @@
 html {
   font-size: 18px;
 }
-.navbar.transparent.navbar-inverse .navbar-inner {
+.navbar.tran  sparent.navbar-inverse .navbar-inner {
    background: rgba(0,0,0,0.4);
 }
 
@@ -26,16 +26,16 @@ h1 {
   font-size: 3.5rem;
   white-space: wrap;
 }
-p {
+p.main {
   color: white;
   padding-left: 40px;
   padding-top: 40px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-size: 29px;
+	font-size: 49px;
 	font-style: normal;
 	font-variant: normal;
 	font-weight: bold;
-	line-height: 38px;
+	line-height: 18px;
 }
 
 .registerForm{
@@ -55,10 +55,16 @@ ul.post-grid li {
   float: left;
   padding: 20px;
   width: 25%;
+  opacity: 5.3;
   cursor: pointer;
-  color: #337DFF;
+  color: brown;
   transition: background linear 0.5s;
   border-bottom: 1px solid #3a8bab;
+  margin: 30px;
+  background-color: #ffffff;
+  border: 1px solid black;
+  opacity: 0.6;
+
 }
 ul.post-grid li:hover {
  
@@ -84,7 +90,7 @@ h4{
 }
 .post {
   
-  color: #337DFF;
+  color: white;
   -webkit-transition: 0.5s linear all;
   transition: 0.5s linear all;
   opacity: 1;
@@ -134,6 +140,7 @@ textarea {
 }
 img {
   max-width: 100%;
+  
 }
 .btn-circle.btn-xl {
   width: 70px;
@@ -165,4 +172,7 @@ input[type=submit] {
 }
 input[type=submit]:hover {
     background-color: #4286f4;
+}
+p{
+  word-wrap: normal;
 }

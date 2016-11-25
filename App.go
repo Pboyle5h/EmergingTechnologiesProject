@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
@@ -25,15 +26,20 @@ func indexRoute(w http.ResponseWriter, r *http.Request) {
 func main() {
 	// adapted from https://www.reddit.com/r/golang/comments/2tp5ho/updated_my_ggap_stack_web_app_tutorial_slothful/
 	router := initRouter()
+	port := os.Getenv("PORT")
+	if port == "" {
+		server := &http.Server{
 
-	server := &http.Server{
-		Addr:    ":4000",
-		Handler: router,
+			Addr:    ":4000",
+			Handler: router,
+		}
+		server.ListenAndServe()
+		fmt.Println("Starting server")
+	} else {
+		http.ListenAndServe(":"+port, nil)
+		fmt.Println("Starting server")
 	}
 
-	fmt.Println("Starting server")
-
-	server.ListenAndServe()
 }
 
 // adapted from https://www.reddit.com/r/golang/comments/2tp5ho/updated_my_ggap_stack_web_app_tutorial_slothful/
