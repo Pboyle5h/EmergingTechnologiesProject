@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
@@ -27,15 +28,26 @@ func indexRoute(w http.ResponseWriter, r *http.Request) {
 func main() {
 	// adapted from https://www.reddit.com/r/golang/comments/2tp5ho/updated_my_ggap_stack_web_app_tutorial_slothful/
 	router := initRouter()
+	port := os.Getenv("PORT")
+	if port == "" {
+		server := &http.Server{
 
-	server := &http.Server{
-		Addr:    ":4000",
-		Handler: router,
+			Addr:    ":4000",
+			Handler: router,
+		}
+		getUserBlogs()
+		server.ListenAndServe()
+		fmt.Println("Starting server")
+	} else {
+		server := &http.Server{
+
+			Addr:    ":" + port,
+			Handler: router,
+		}
+		getUserBlogs()
+		server.ListenAndServe()
+		fmt.Println("Starting server")
 	}
-
-	fmt.Println("Starting server")
-	getUserBlogs()
-	server.ListenAndServe()
 }
 
 // adapted from https://www.reddit.com/r/golang/comments/2tp5ho/updated_my_ggap_stack_web_app_tutorial_slothful/
@@ -182,11 +194,11 @@ type (
 		_id       bson.ObjectId `bson:"_id"`
 		UniqueId  string        `json:"unique_id"`
 		Title     string        `json:"title"`
-		Body      []string       `json:"body"`
+		Body      []string      `json:"body"`
 		Author    string        `json:"author"`
 		Comments  []Comment     `json:"comments"`
-		Likes     int        		`json:"likes"`
-		CreatedOn int        		`json:"createOn"`
+		Likes     int           `json:"likes"`
+		CreatedOn int           `json:"createOn"`
 	}
 )
 
@@ -227,15 +239,15 @@ func getUserBlogs() error {
 		fmt.Println("received user blog posts")
 		blogData := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
 		//var resultBlogArray []Blog
-		resultBlog :=  Blog{}
+		resultBlog := Blog{}
 		//Return user blogs and append
-		for i := 0;  i <= len(resultingBlogID.Blogposts)-1 ; i++{
-				err = blogData.Find(bson.M{"uniqueID": resultingBlogID.Blogposts[i]}).One(&resultBlog)
-				if err != nil {
-					// TODO: This exits the cript if the query fails to find the user, needs to be changed
-					log.Fatal(err)
-				}
-				currentUserBlogs = append(currentUserBlogs, resultBlog)
+		for i := 0; i <= len(resultingBlogID.Blogposts)-1; i++ {
+			err = blogData.Find(bson.M{"uniqueID": resultingBlogID.Blogposts[i]}).One(&resultBlog)
+			if err != nil {
+				// TODO: This exits the cript if the query fails to find the user, needs to be changed
+				log.Fatal(err)
+			}
+			currentUserBlogs = append(currentUserBlogs, resultBlog)
 		}
 		return err
 	} else {
