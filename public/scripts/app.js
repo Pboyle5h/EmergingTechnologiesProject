@@ -15,6 +15,25 @@ blog.config(function($routeProvider, $locationProvider){
 
 blog.controller('RegisterCtrl', function($scope, $http, $window){
   //console.log("called")
+   var text1 = function() {       
+      $scope.text1= "DRIFTERS";
+    }
+    var text2 = function() {       
+      $scope.text2= "RACERS";
+    }
+    var text3 = function() {       
+      $scope.text3= "ADVENTURERS";
+    }
+    var text4 = function() {       
+      $scope.text4= "YOUR BLOG AWAITS...";
+    }
+    
+   $timeout(text1, 500);
+   $timeout(text2, 1000);
+   $timeout(text3, 1500);
+   $timeout(text4, 2000);
+});
+
   $scope.register = function() {
     $http.post('/register', {Name: $scope.name, Username: $scope.username,
                      Email: $scope.email, Password: $scope.password}).
