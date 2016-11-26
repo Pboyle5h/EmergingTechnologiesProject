@@ -15,25 +15,6 @@ blog.config(function($routeProvider, $locationProvider){
 
 blog.controller('RegisterCtrl', function($scope, $http, $window){
   //console.log("called")
-   var text1 = function() {       
-      $scope.text1= "DRIFTERS";
-    }
-    var text2 = function() {       
-      $scope.text2= "RACERS";
-    }
-    var text3 = function() {       
-      $scope.text3= "ADVENTURERS";
-    }
-    var text4 = function() {       
-      $scope.text4= "YOUR BLOG AWAITS...";
-    }
-    
-   $timeout(text1, 500);
-   $timeout(text2, 1000);
-   $timeout(text3, 1500);
-   $timeout(text4, 2000);
-});
-
   $scope.register = function() {
     $http.post('/register', {Name: $scope.name, Username: $scope.username,
                      Email: $scope.email, Password: $scope.password}).
@@ -42,6 +23,26 @@ blog.controller('RegisterCtrl', function($scope, $http, $window){
         $window.location.href="/";
       });
   };
+});
+
+blog.controller('MainCtrl', function($scope, $timeout){
+  var text1 = function() {
+     $scope.text1= "DRIFTERS";
+   }
+   var text2 = function() {
+     $scope.text2= "RACERS";
+   }
+   var text3 = function() {
+     $scope.text3= "ADVENTURERS";
+   }
+   var text4 = function() {
+     $scope.text4= "YOUR BLOG AWAITS...";
+   }
+
+  $timeout(text1, 500);
+  $timeout(text2, 1000);
+  $timeout(text3, 1500);
+  $timeout(text4, 2000);
 });
 
 blog.controller('LoginCtrl', function($scope, $http, $window){
@@ -85,16 +86,8 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
    };
 
    blog.post = {};
- //  blog.addPost = function(){
- //    blog.post.createdOn = Date.now();
- //    blog.post.comments = [];
- //    blog.post.likes = 0;
- //    blog.posts.unshift(this.post);
- //    blog.tab = 0;
- //    blog.post ={};
- //  };
 
-  blog.addPost = function(){
+   blog.addPost = function(){
     var uniqueid = (Math.random() * 1000).toString();
     $http.post('/blogs', {UniqueId : uniqueid, Title: blog.post.title,
       Body: blog.post.body, Author: blog.post.author, Comments: [], Likes: 0,
@@ -142,16 +135,8 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
     };
 
     blog.post = {};
-  //  blog.addPost = function(){
-  //    blog.post.createdOn = Date.now();
-  //    blog.post.comments = [];
-  //    blog.post.likes = 0;
-  //    blog.posts.unshift(this.post);
-  //    blog.tab = 0;
-  //    blog.post ={};
-  //  };
 
-   blog.addPost = function(){
+    blog.addPost = function(){
      var uniqueid = (Math.random() * 1000).toString();
      $http.post('/user', {UniqueId : uniqueid, Title: blog.post.title,
        Body: blog.post.body, Author: blog.post.author, Comments: [], Likes: 0,

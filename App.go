@@ -35,8 +35,8 @@ func main() {
 			Addr:    ":4000",
 			Handler: router,
 		}
-		getUserBlogs()
-		fmt.Println(currentUserBlogs[0])
+		//getUserBlogs()
+		//fmt.Println(currentUserBlogs[0])
 		server.ListenAndServe()
 		fmt.Println("Starting server")
 	} else {
@@ -45,7 +45,7 @@ func main() {
 			Addr:    ":" + port,
 			Handler: router,
 		}
-		getUserBlogs()
+		//getUserBlogs()
 		server.ListenAndServe()
 		fmt.Println("Starting server")
 	}
@@ -71,7 +71,11 @@ func initRouter() *mux.Router {
 	// adapted from https://auth0.com/blog/authentication-in-golang/
 	r.Handle("/register", errorHandler(Register)).Methods("POST")
 	r.Handle("/login", errorHandler(loginHandler)).Methods("POST")
+	r.Handle("/blogs", errorHandler(createBlog)).Methods("POST")
 	r.Handle("/blogs", errorHandler(getBlogs)).Methods("GET")
+	r.Handle("/user", errorHandler(getUserBlogs)).Methods("GET")
+	r.Handle("/user", errorHandler(deleteBlogPost)).Methods("DELETE") // yet to be implemented
+	r.Handle("/user", errorHandler(updateBlogPost)).Methods("PUT")    // Yet to be implemented
 	//Add static routes for the public directory
 	AddStaticRoutes(r, "/partials/", "public/partials",
 		"/scripts/", "public/scripts", "/styles/", "public/styles",
@@ -192,14 +196,14 @@ func logoutHandler(w http.ResponseWriter, req *http.Request) {
 
 type (
 	Blog struct {
-		_id       bson.ObjectId `bson:"_id"`
-		UniqueId  string        `json:"unique_id"`
-		Title     string        `json:"title"`
-		Body      []string      `json:"body"`
-		Author    string        `json:"author"`
-		Likes     int           `json:"likes"`
-		CreatedOn int           `json:"createOn"`
-		Comments []Comment
+		//_id       bson.ObjectId `bson:"_id"`
+		UniqueId  string   `json:"unique_id"`
+		Title     string   `json:"title"`
+		Body      []string `json:"body"`
+		Author    string   `json:"author"`
+		Likes     int      `json:"likes"`
+		CreatedOn int      `json:"createOn"`
+		Comments  []Comment
 	}
 )
 
@@ -210,6 +214,21 @@ type (
 		CAuthor string `json:"cauthor"`
 	}
 )
+
+func createBlog(w http.ResponseWriter, r *http.Request) error {
+	decoder := json.NewDecoder(r.Body)
+	var blog Blog
+	err := decoder.Decode(&blog)
+	if err != nil {
+		return err
+	}
+	c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
+	err = c.Insert(&Blog{blog.UniqueId, blog.Title, blog.Body, blog.Author, blog.Likes, blog.CreatedOn, blog.Comments})
+	if err != nil {
+		log.Fatal(err)
+	}
+	return nil
+}
 
 func getBlogs(w http.ResponseWriter, r *http.Request) error {
 	var results []Blog
@@ -225,7 +244,7 @@ func getBlogs(w http.ResponseWriter, r *http.Request) error {
 	json.NewEncoder(w).Encode(results)
 	return nil
 }
-func getUserBlogs() error {
+func getUserBlogs(w http.ResponseWriter, r *http.Request) error {
 	fmt.Println("Getting user blogs started")
 	currentUser = "aaa"
 
@@ -251,23 +270,52 @@ func getUserBlogs() error {
 			}
 			currentUserBlogs = append(currentUserBlogs, resultBlog)
 		}
-		return err
-	} else {
+	}
+	json.NewEncoder(w).Encode(currentUserBlogs)
+	return nil
+}
+func updateBlogPost(w http.ResponseWriter, r *http.Request) error {
+	decoder := json.NewDecoder(r.Body)
+	var blog Blog
+	jErr := decoder.Decode(&blog)
+	if err != nil {
+		return jErr
+	}
+	c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
+	err = c.Update(bson.M{"uniqueId": blog.UniqueId},
+		bson.M{"title": blog.Title})
+	if err != nil {
 		return err
 	}
+	return nil
 }
 
-func getComments(blogID string) []Comment{
+func deleteBlogPost(w http.ResponseWriter, r *http.Request) error {
+	decoder := json.NewDecoder(r.Body)
+	var blog Blog
+	err := decoder.Decode(&blog)
+	if err != nil {
+		return err
+	}
+	c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
+	err = c.Remove(bson.M{"uniqueId": blog.UniqueId})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func getComments(blogID string) []Comment {
 	commentData := mongoConnection.DB("heroku_lzbj5rj0").C("Comments")
 	var resultComments []Comment
 	err = commentData.Find(bson.M{"cblogid": blogID}).All(&resultComments)
 	if err != nil {
 		log.Fatal(err)
 	}
-	if commentData != nil{
+	if commentData != nil {
 		fmt.Println("Comments downloaded")
 		return resultComments
-	}else{
+	} else {
 		fmt.Println("No comments")
 		return nil
 	}
