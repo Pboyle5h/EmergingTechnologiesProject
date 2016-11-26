@@ -282,6 +282,7 @@ func getUserBlogs(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 func updateBlogPost(w http.ResponseWriter, r *http.Request) error {
+	fmt.Println("called")
 	decoder := json.NewDecoder(r.Body)
 	var blog Blog
 	jErr := decoder.Decode(&blog)

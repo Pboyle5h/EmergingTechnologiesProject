@@ -56,18 +56,9 @@
                  <cite>- <b>{{comment.cauthor}}</b></cite>
                </li>
               </ul>
-              <form name="commentForm" ng-submit="commentForm.$valid && commentCtrl.addComment(post)" novalidate>
-
-
-                <h4>Add Comment</h4>
-                  <textarea ng-model="commentCtrl.comment.body" cols="30" rows="10" required></textarea>
-                <label for="">by:</label>
-                  <input type="text" ng-model="commentCtrl.comment.author" required placeholder="Name"/>
-
-                  <input type="submit" value="Submit" />
-                </form>
             </div>
         </div>
+        <button class="btn btn-danger" ng-click="deletePost(post)">Delete Post</button>
       </div>
         <div class="post" ng-show="blog.isSelected('new')">
           <h2>Add New Post</h2>

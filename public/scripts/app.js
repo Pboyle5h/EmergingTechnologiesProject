@@ -134,8 +134,8 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
       return blog.tab === checkTab;
     };
 
-    blog.post = {};
 
+    blog.post = {};
     blog.addPost = function(){
      var uniqueid = (Math.random() * 1000).toString();
      $http.post('/user', {UniqueId : uniqueid, Title: blog.post.title,
@@ -147,13 +147,14 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
      });
      };
 
-    //  blog.deletePost = function(post){
-    //    $http.delete('/user', {UniqueId : post.UniqueId}).
-    //    error(logError).
-    //    success(function(){
-    //      $window.location.href="/blogs";
-    //    })
-    //  };
+     blog.deletePost = function(post){
+       console.log("called");
+       $http.delete('/user', {UniqueId : $scope.post.unique_id}).
+       error(logError).
+       success(function(){
+         $window.location.href="/blogs";
+       })
+     };
 
   }]);
 
