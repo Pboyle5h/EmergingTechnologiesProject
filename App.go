@@ -36,6 +36,7 @@ func main() {
 			Handler: router,
 		}
 		getUserBlogs()
+		fmt.Println(currentUserBlogs[0])
 		server.ListenAndServe()
 		fmt.Println("Starting server")
 	} else {
@@ -196,16 +197,17 @@ type (
 		Title     string        `json:"title"`
 		Body      []string      `json:"body"`
 		Author    string        `json:"author"`
-		Comments  []Comment     `json:"comments"`
 		Likes     int           `json:"likes"`
 		CreatedOn int           `json:"createOn"`
+		Comments []Comment
 	}
 )
 
 type (
 	Comment struct {
-		Body   string `json:"cbody"`
-		Author string `json:"cauthor"`
+		CBlogID string `json:"cblogid"`
+		CBody   string `json:"cbody"`
+		CAuthor string `json:"cauthor"`
 	}
 )
 
@@ -238,11 +240,11 @@ func getUserBlogs() error {
 	if resultingBlogID.Blogposts != nil {
 		fmt.Println("received user blog posts")
 		blogData := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
-		//var resultBlogArray []Blog
 		resultBlog := Blog{}
 		//Return user blogs and append
 		for i := 0; i <= len(resultingBlogID.Blogposts)-1; i++ {
 			err = blogData.Find(bson.M{"uniqueID": resultingBlogID.Blogposts[i]}).One(&resultBlog)
+			resultBlog.Comments = getComments(resultingBlogID.Blogposts[i])
 			if err != nil {
 				// TODO: This exits the cript if the query fails to find the user, needs to be changed
 				log.Fatal(err)
@@ -253,13 +255,36 @@ func getUserBlogs() error {
 	} else {
 		return err
 	}
+}
 
+func getComments(blogID string) []Comment{
+	commentData := mongoConnection.DB("heroku_lzbj5rj0").C("Comments")
+	var resultComments []Comment
+	err = commentData.Find(bson.M{"cblogid": blogID}).All(&resultComments)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if commentData != nil{
+		fmt.Println("Comments downloaded")
+		return resultComments
+	}else{
+		fmt.Println("No comments")
+		return nil
+	}
 }
 
 //adapted from https://stevenwhite.com/building-a-rest-service-with-golang-3/ used to make connection to mongoDB database
 func insert(a User) {
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
 	err = c.Insert(&User{a.Name, a.Username, a.Password, a.Email, nil})
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func insertComment(a Comment) {
+	c := mongoConnection.DB("heroku_lzbj5rj0").C("Comments")
+	err = c.Insert(&Comment{a.CBlogID, a.CBody, a.CAuthor})
 	if err != nil {
 		log.Fatal(err)
 	}
