@@ -45,7 +45,6 @@ func main() {
 			Addr:    ":" + port,
 			Handler: router,
 		}
-		getUserBlogs()
 		server.ListenAndServe()
 		fmt.Println("Starting server")
 	}
@@ -226,6 +225,7 @@ func getBlogs(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 func getUserBlogs() error {
+	currentUserBlogs = nil
 	fmt.Println("Getting user blogs started")
 	currentUser = "aaa"
 
