@@ -35,8 +35,8 @@ func main() {
 			Addr:    ":4000",
 			Handler: router,
 		}
-		//getUserBlogs()
-		//fmt.Println(currentUserBlogs[0])
+		getUserBlogs()
+		fmt.Println(currentUserBlogs[0])
 		server.ListenAndServe()
 		fmt.Println("Starting server")
 	} else {
@@ -45,7 +45,9 @@ func main() {
 			Addr:    ":" + port,
 			Handler: router,
 		}
-		//getUserBlogs()
+
+		getUserBlogs()
+
 		server.ListenAndServe()
 		fmt.Println("Starting server")
 	}
@@ -73,7 +75,7 @@ func initRouter() *mux.Router {
 	r.Handle("/login", errorHandler(loginHandler)).Methods("POST")
 	r.Handle("/blogs", errorHandler(createBlog)).Methods("POST")
 	r.Handle("/blogs", errorHandler(getBlogs)).Methods("GET")
-	r.Handle("/user", errorHandler(getUserBlogs)).Methods("GET")
+	//r.Handle("/user", errorHandler(getUserBlogs)).Methods("GET")
 	r.Handle("/user", errorHandler(deleteBlogPost)).Methods("DELETE") // yet to be implemented
 	r.Handle("/user", errorHandler(updateBlogPost)).Methods("PUT")    // Yet to be implemented
 	//Add static routes for the public directory
@@ -244,7 +246,12 @@ func getBlogs(w http.ResponseWriter, r *http.Request) error {
 	json.NewEncoder(w).Encode(results)
 	return nil
 }
-func getUserBlogs(w http.ResponseWriter, r *http.Request) error {
+
+//func getUserBlogs(w http.ResponseWriter, r *http.Request) error {
+
+func getUserBlogs() error {
+	currentUserBlogs = nil
+
 	fmt.Println("Getting user blogs started")
 	currentUser = "aaa"
 
@@ -271,7 +278,7 @@ func getUserBlogs(w http.ResponseWriter, r *http.Request) error {
 			currentUserBlogs = append(currentUserBlogs, resultBlog)
 		}
 	}
-	json.NewEncoder(w).Encode(currentUserBlogs)
+	//json.NewEncoder(w).Encode(currentUserBlogs)
 	return nil
 }
 func updateBlogPost(w http.ResponseWriter, r *http.Request) error {

@@ -147,6 +147,14 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
      });
      };
 
+    //  blog.deletePost = function(post){
+    //    $http.delete('/user', {UniqueId : post.UniqueId}).
+    //    error(logError).
+    //    success(function(){
+    //      $window.location.href="/blogs";
+    //    })
+    //  };
+
   }]);
 
   blog.controller('UserCommentController', function(){
