@@ -70,15 +70,16 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
   //  $http.get('https://s3-us-west-2.amazonaws.com/s.cdpn.io/110131/posts_1.json').success(function(data){
   //    blog.posts = data;
   //  });
-  $http.get('/blogs').success(function(data) {
-    blog.posts = data;
+  $http.get('/blogs').success(function(response) {
+    console.log(response);
+    blog.posts = response;
   });
 
    blog.tab = 'blog';
 
    blog.selectTab = function(setTab){
      blog.tab = setTab;
-     console.log(blog.tab)
+     //console.log(blog.tab)
    };
 
    blog.isSelected = function(checkTab){
@@ -127,7 +128,7 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
 
     blog.selectTab = function(setTab){
       blog.tab = setTab;
-      console.log(blog.tab)
+      //console.log(blog.tab)
     };
 
     blog.isSelected = function(checkTab){
@@ -148,11 +149,24 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
      };
 
      blog.deletePost = function(post){
-       console.log("called");
-       $http.delete('/user', {UniqueId : $scope.post.unique_id}).
+       console.log(blog.post.uniqueID);
+       $http.delete('/user', {UniqueId : blog.post.uniqueID}).
        error(logError).
        success(function(){
          $window.location.href="/blogs";
+       })
+     };
+
+     blog.editPost = function(post){
+       blog.editPost = true;
+       blog.post = post;
+     }
+     blog.updatePost = function(){
+       $scope.editing = true;
+       $http.put('/user', {"body" : blog.post.body}).
+       error(logError).
+       success(function(data){
+         blog.posts = data;
        })
      };
 

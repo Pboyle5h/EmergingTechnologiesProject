@@ -30,8 +30,8 @@
               <h3>Comments</h3>
               <ul>
                <li ng-repeat="comment in post.comments">
-                 "{{comment.body}}"
-                 <cite>- <b>{{comment.author}}</b></cite>
+                 "{{comment.cbody}}"
+                 <cite>- <b>{{comment.cauthor}}</b></cite>
                </li>
               </ul>
               <form name="commentForm" ng-submit="commentForm.$valid && commentCtrl.addComment(post)" novalidate>
@@ -55,8 +55,6 @@
                   <input type="text" ng-model="blog.post.title"/>
                   <h4>Body</h4>
                   <textarea ng-model="blog.post.body" ng-list="/\n/" rows="10"></textarea>
-                  <label for="">Featured Image URL</label>
-                  <!-- <input type="text" ng-model="blog.post.image" placeholder="http://placekitten.com/g/2000/600" /> -->
                   <label for="">by:</label>
                   <input type="text" ng-model="blog.post.author" placeholder="Author Name" required/>
 
@@ -67,8 +65,8 @@
 
           </div>
         </div>
-        
-       
+
+
    </div>
-    
+
   </div>

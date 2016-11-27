@@ -199,7 +199,7 @@ func logoutHandler(w http.ResponseWriter, req *http.Request) {
 type (
 	Blog struct {
 		//_id       bson.ObjectId `bson:"_id"`
-		UniqueId  string   `json:"unique_id"`
+		UniqueId  string   `json:"uniqueID"`
 		Title     string   `json:"title"`
 		Body      []string `json:"body"`
 		Author    string   `json:"author"`
