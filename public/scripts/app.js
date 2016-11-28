@@ -140,22 +140,46 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
     blog.addPost = function(){
      var uniqueid = (Math.random() * 1000).toString();
      $http.post('/user', {UniqueId : uniqueid, Title: blog.post.title,
-       Body: blog.post.body, Author: blog.post.author, Comments: [], Likes: 0,
-       CreatedOn: Date.now()}).
+       Body: blog.post.body, Author: blog.post.author, Likes: 0,
+       CreatedOn: Date.now(), Comments: []}).
      error(logError).
      success(function(){
        $window.location.href="/blogs";
      });
      };
 
-     blog.deletePost = function(post){
-       console.log(blog.post.uniqueID);
-       $http.delete('/user', {UniqueId : blog.post.uniqueID}).
-       error(logError).
-       success(function(){
-         $window.location.href="/blogs";
-       })
-     };
+    //  blog.deletePost = function(post){
+    //    blog.post = post;
+    //    console.log(blog.post);
+    //    $http.delete('/user', {UniqueId : post.uniqueid, Title :post.title,
+    //     Body: blog.post.body, Author: post.author ,Likes: post.likes,
+    //     CreatedOn : post.createon, Comments : post.comments}).
+    //    error(logError).
+    //    success(function(){
+    //      $window.location.href="/blogs";
+    //    })
+    //  };
+
+     blog.deletePost = function(post) {
+    $http({
+        url: '/user',
+        method: 'DELETE',
+        data: {
+            UniqueId: post.uniqueid,
+            Title: post.title,
+            Body: post.body,
+            Author: post.author,
+            Likes: post.likes,
+            CreatedOn: post.createon,
+            Comments: post.comments
+        },
+        headers: {
+            "Content-Type": "application/json;charset=utf-8"
+        }
+    }).success(function(res) {
+        $window.location.href="/";
+    }).error(logError);
+    };
 
      blog.editPost = function(post){
        blog.editPost = true;

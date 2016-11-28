@@ -199,7 +199,7 @@ func logoutHandler(w http.ResponseWriter, req *http.Request) {
 type (
 	Blog struct {
 		//_id       bson.ObjectId `bson:"_id"`
-		UniqueId  string   `json:"uniqueID"`
+		UniqueId  string   `json:"uniqueid"`
 		Title     string   `json:"title"`
 		Body      []string `json:"body"`
 		Author    string   `json:"author"`
@@ -261,7 +261,7 @@ func getUserBlogs(w http.ResponseWriter, r *http.Request) error {
 	err = c.Find(bson.M{"username": currentUser}).Select(bson.M{"blogposts": 1, "_id": 0}).One(&resultingBlogID)
 	if err != nil {
 		// TODO: This exits the cript if the query fails to find the user, needs to be changed
-		log.Fatal(err)
+		return err
 	}
 	if resultingBlogID.Blogposts != nil {
 		fmt.Println("received user blog posts")
@@ -289,9 +289,9 @@ func updateBlogPost(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return jErr
 	}
-	c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
-	err = c.Update(bson.M{"uniqueId": blog.UniqueId},
-		bson.M{"title": blog.Title})
+	//c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
+	//err = c.Update(bson.M{"uniqueId": blog.UniqueId},
+	//bson.M{"body": blog.Body})
 	if err != nil {
 		return err
 	}
@@ -302,14 +302,18 @@ func deleteBlogPost(w http.ResponseWriter, r *http.Request) error {
 	decoder := json.NewDecoder(r.Body)
 	var blog Blog
 	err := decoder.Decode(&blog)
+	fmt.Println(blog)
 	if err != nil {
 		return err
 	}
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
-	err = c.Remove(bson.M{"uniqueId": blog.UniqueId})
+	err = c.Remove(bson.M{"uniqueid": blog.UniqueId})
 	if err != nil {
+		fmt.Println("error")
 		return err
 	}
+	c = mongoConnection.DB("heroku_lzbj5rj0").C("Users")
+	err = c.Remove(bson.M{"blogposts": blog.UniqueId})
 	return nil
 }
 
