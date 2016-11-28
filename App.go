@@ -312,13 +312,11 @@ func deleteBlogPost(w http.ResponseWriter, r *http.Request) error {
 	decoder := json.NewDecoder(r.Body)
 	var blog Blog
 	err := decoder.Decode(&blog)
-	if err != nil {
-		return err
-	}
+
 
 	fmt.Println("Remove actual blog")
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
-	err = c.Remove(bson.M{"uniqueId": blog.UniqueId})
+	err = c.Remove(bson.M{"uniqueid": blog.UniqueId})
 	if err != nil {
 		return err
 	}
