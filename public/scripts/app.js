@@ -20,7 +20,7 @@ blog.controller('RegisterCtrl', function($scope, $http, $window){
                      Email: $scope.email, Password: $scope.password}).
       error(logError).
       success(function(data) {
-        $window.location.href="/";
+        $window.location.href="/login";
       });
   };
 });
@@ -45,7 +45,13 @@ blog.controller('MainCtrl', function($scope, $timeout){
   $timeout(text4, 2000);
 });
 
-blog.controller('LoginCtrl', function($scope, $http, $window){
+blog.controller('NavCtrl', function($scope, authService){
+  $scope.isAuth = authService.isAuth();
+  console.log(authService.isAuth());
+  $scope.username = authService.getUsername();
+});
+
+blog.controller('LoginCtrl', function($scope, $http, $window, authService){
   $scope.login = function(){
     $http.post('/login', {Username : $scope.username, Password : $scope.password}).
       error(function(){
@@ -54,8 +60,9 @@ blog.controller('LoginCtrl', function($scope, $http, $window){
         $scope.invalidLogin = !$scope.invalidLogin;
       }).
       success(function(){
-        //console.log("success");
-        $window.location.href="/user";
+        authService.setUsername($scope.username);
+        authService.setAuth;
+        $window.location.href="/";
       });
   };
 });
@@ -95,7 +102,7 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
       CreatedOn: Date.now()}).
     error(logError).
     success(function(){
-      $window.location.href="/user";
+      $window.location.href="/";
     });
     };
 
@@ -144,21 +151,9 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
        CreatedOn: Date.now(), Comments: []}).
      error(logError).
      success(function(){
-       $window.location.href="/blogs";
+       $window.location.href="/";
      });
      };
-
-    //  blog.deletePost = function(post){
-    //    blog.post = post;
-    //    console.log(blog.post);
-    //    $http.delete('/user', {UniqueId : post.uniqueid, Title :post.title,
-    //     Body: blog.post.body, Author: post.author ,Likes: post.likes,
-    //     CreatedOn : post.createon, Comments : post.comments}).
-    //    error(logError).
-    //    success(function(){
-    //      $window.location.href="/blogs";
-    //    })
-    //  };
 
      blog.deletePost = function(post) {
     $http({
@@ -208,3 +203,44 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
 var logError = function(data, status) {
    console.log('code '+status+': '+data);
  };
+
+blog.service('authService', function() {
+  var username = "";
+  var loggedIn = false;
+   return {
+     setAuth : function(){
+       loggedIn = true;
+     },
+     isAuth : function(){
+       return loggedIn;
+     },
+     setUsername: function(un){
+       username = un;
+     },
+     getUsername: function(){
+       return username;
+     }
+   };
+  // var setAuth = function(){
+  //   this.loggedIn = true;
+  // }
+  //
+  // var isAuth = function(){
+  //   return this.loggedIn;
+  // }
+  // var setUsername = function(username) {
+  //     this.username = username;
+  // };
+  //
+  // var getUsername = function(){
+  //     return this.username;
+  // };
+  //
+  // return {
+  //   setUsername: setUsername,
+  //   getUsername: getUsername,
+  //   setAuth: setAuth,
+  //   isAuth : isAuth
+  // };
+
+});
