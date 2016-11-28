@@ -1,6 +1,7 @@
 // adapated from https://www.reddit.com/r/golang/comments/2tp5ho/updated_my_ggap_stack_web_app_tutorial_slothful/
 var blog = angular.module('blogApp', ['ngRoute']);
 
+
 blog.config(function($routeProvider, $locationProvider){
   $routeProvider
   .when('/', {templateUrl: '/partials/main.html'})

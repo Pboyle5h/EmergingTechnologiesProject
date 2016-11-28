@@ -5,22 +5,14 @@
 html {
   font-size: 18px;
 }
-
-
- .navbar.transparent.navbar-inverse .navbar-inner {
+.navbar.transparent.navbar-inverse .navbar-inner {
    background: rgba(0,0,0,0.4);
 }
-header {
-  position: absolute;
-    bottom: 8px;
-    left: 10px;
-    right:650px;
-    font-size: 15px;
-    color: #f4c842;
-    }
+
 
 body{
-    background: url("/images/homeImg.jpg")no-repeat center center fixed;
+    background: url("/images/homeImg1.jpg") no-repeat center center fixed;
+    
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
@@ -36,9 +28,15 @@ h1 {
   white-space: wrap;
 }
 p {
-  text-align: left;
-  margin: 0;
-  font-size: 1.5rem;
+  color: white;
+  padding-left: 40px;
+  padding-top: 40px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 29px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+	line-height: 38px;
 }
 
 .registerForm{
@@ -46,63 +44,58 @@ p {
   background-color: #ffffcc;
 }
 
-.topbar {
-  background: #79B9D2;
-  color: white;
-  width: 100%;
-  z-index: 9999;
-  padding: 5px 20px;
-}
-.topbar h1 {
-  cursor: pointer;
-}
-.topbar nav {
-  margin-top: 25px;
-}
-.topbar nav ul {
-  padding: 0;
-  margin: 0;
-}
-.topbar nav ul li {
-  display: inline-block;
-  padding: 10px;
-}
-.topbar nav ul li a {
-  color: white;
-  text-decoration: none;
-}
+
+
 ul.post-grid {
+  
   margin: 0;
   padding: 0;
   list-style-type: none;
 }
 ul.post-grid li {
+  float: right;
   padding: 20px;
+  width: 25%;
   cursor: pointer;
+  color: #337DFF;
   transition: background linear 0.5s;
   border-bottom: 1px solid #3a8bab;
+  margin: 30px;
+  background-color: Black;
+  border: 1px solid black;
+  opacity: 0.6;
+  filter: alpha(opacity=60); /* For IE8 and earlier */
 }
 ul.post-grid li:hover {
+ 
+ 
   background: #3a8bab;
   color: white;
 }
 ul.post-grid li:hover h3 {
-  color: white;
+
+  color: lightgray;
 }
 .content {
-  width: 100%;
-  position: relative;
+  
+  position: absolute;
   padding: 20px 40px 20px;
 }
-h2,
-h3 {
-  color: #3a8bab;
+h2{
+  text-align: center;
+}
+h4{   
+  color: white;
+  text-align: center;
 }
 .post {
+  
+  color: #337DFF;
   -webkit-transition: 0.5s linear all;
   transition: 0.5s linear all;
   opacity: 1;
   padding-bottom: 30px;
+ 
 }
 .post cite {
   display: inline-block;
@@ -122,10 +115,15 @@ h3 {
 }
 .post.ng-hide-add,
 .post.ng-hide-remove {
+
   display: block!important;
 }
-form {
-  width: 100%;
+
+form { 
+  margin-left: 10%;
+  margin-right:10%;
+  width: 80%;  
+  color: chartreuse;
 }
 input,
 textarea {
@@ -133,6 +131,11 @@ textarea {
   width: 100%;
   padding: 10px;
   font-size: 1.1em;
+  
+  background-color: Black;
+  border: 1px solid black;
+  opacity: 0.8;
+  filter: alpha(opacity=60); /* For IE8 and earlier */
 }
 .ng-invalid.ng-dirty {
   border-color: red;
@@ -141,5 +144,52 @@ textarea {
   border-color: green;
 }
 img {
+ 
   max-width: 100%;
 }
+.btn-circle.btn-xl {
+  width: 70px;
+  height: 70px;
+  padding: 10px 10px;
+  font-size: 24px;
+  line-height: 1.33;
+  border-radius: 35px;
+  float: right
+}
+input[type=text], select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: Black;
+    border: 1px solid black;
+    opacity: 0.8;
+    filter: alpha(opacity=60); /* For IE8 and earlier */
+}
+input[type=submit] {
+    width: 100%;
+    background-color: #337DFF;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  background-color: Black;
+  border: 1px solid black;
+  opacity: 0.8;
+  filter: alpha(opacity=60); /* For IE8 and earlier */
+}
+input[type=submit]:hover {
+    background-color: #4286f4;    
+}
+ .error{
+  
+   color: darkorange; 
+   font-size: 18px;
+   float: left;
+   text-shadow: black;
+ }
