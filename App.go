@@ -224,6 +224,13 @@ func createBlog(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return err
 	}
+	currentUser = "aaa"
+	resultingBlogID := User{}
+	u := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
+	err = u.Find(bson.M{"username" : currentUser}).Select(bson.M{"blogposts" : 1}).One(&resultingBlogID)
+	resultingBlogID.Blogposts = append(resultingBlogID.Blogposts, blog.UniqueId)
+	err = u.Update(bson.M{"username" : currentUser}, bson.M{"$set" : bson.M{"blogposts": resultingBlogID}} )
+
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
 	err = c.Insert(&Blog{blog.UniqueId, blog.Title, blog.Body, blog.Author, blog.Likes, blog.CreatedOn, blog.Comments})
 	if err != nil {
@@ -259,12 +266,12 @@ func getUserBlogs(w http.ResponseWriter, r *http.Request) error {
 	resultingBlogID := User{}
 	//REturn blog id's from the user document
 	err = c.Find(bson.M{"username": currentUser}).Select(bson.M{"blogposts": 1, "_id": 0}).One(&resultingBlogID)
+	fmt.Println(resultingBlogID.Blogposts)
 	if err != nil {
 		// TODO: This exits the cript if the query fails to find the user, needs to be changed
-		return err
+		log.Fatal(err)
 	}
 	if resultingBlogID.Blogposts != nil {
-		fmt.Println("received user blog posts")
 		blogData := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
 		resultBlog := Blog{}
 		//Return user blogs and append
@@ -275,6 +282,8 @@ func getUserBlogs(w http.ResponseWriter, r *http.Request) error {
 				// TODO: This exits the cript if the query fails to find the user, needs to be changed
 				log.Fatal(err)
 			}
+			fmt.Println("Id: " + resultBlog.UniqueId)
+			fmt.Println("title " + resultBlog.Title)
 			currentUserBlogs = append(currentUserBlogs, resultBlog)
 		}
 	}
@@ -289,9 +298,9 @@ func updateBlogPost(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return jErr
 	}
-	//c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
-	//err = c.Update(bson.M{"uniqueId": blog.UniqueId},
-	//bson.M{"body": blog.Body})
+	c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
+	err = c.Update(bson.M{"uniqueId": blog.UniqueId},
+		bson.M{"title": blog.Title})
 	if err != nil {
 		return err
 	}
@@ -299,21 +308,37 @@ func updateBlogPost(w http.ResponseWriter, r *http.Request) error {
 }
 
 func deleteBlogPost(w http.ResponseWriter, r *http.Request) error {
+	fmt.Println("Delete post started")
 	decoder := json.NewDecoder(r.Body)
 	var blog Blog
 	err := decoder.Decode(&blog)
-	fmt.Println(blog)
-	if err != nil {
-		return err
-	}
+
+
+	fmt.Println("Remove actual blog")
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
 	err = c.Remove(bson.M{"uniqueid": blog.UniqueId})
 	if err != nil {
-		fmt.Println("error")
 		return err
 	}
-	c = mongoConnection.DB("heroku_lzbj5rj0").C("Users")
-	err = c.Remove(bson.M{"blogposts": blog.UniqueId})
+
+	fmt.Println("Delete blog reference from user")
+	var tempBlogArray []string
+	resultingBlogID := User{}
+	u := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
+	err = u.Find(bson.M{"username" : currentUser}).Select(bson.M{"blogposts" : 1}).One(&resultingBlogID)
+	if err != nil {
+		return err
+	}
+	for x := 0; x <= len(resultingBlogID.Blogposts)-1; x++{
+		if resultingBlogID.Blogposts[x] != blog.UniqueId{
+			tempBlogArray = append(tempBlogArray, (resultingBlogID.Blogposts[x]))
+		}
+	}
+	err = u.Update(bson.M{"username" : currentUser}, bson.M{"$set" : bson.M{"blogposts": tempBlogArray}} )
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
