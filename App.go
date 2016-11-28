@@ -269,7 +269,7 @@ func getUserBlogs(w http.ResponseWriter, r *http.Request) error {
 		resultBlog := Blog{}
 		//Return user blogs and append
 		for i := 0; i <= len(resultingBlogID.Blogposts)-1; i++ {
-			err = blogData.Find(bson.M{"uniqueID": resultingBlogID.Blogposts[i]}).One(&resultBlog)
+			err = blogData.Find(bson.M{"uniqueid": resultingBlogID.Blogposts[i]}).One(&resultBlog)
 			resultBlog.Comments = getComments(resultingBlogID.Blogposts[i])
 			if err != nil {
 				// TODO: This exits the cript if the query fails to find the user, needs to be changed
