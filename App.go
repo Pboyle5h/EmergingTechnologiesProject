@@ -249,6 +249,9 @@ func getBlogs(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return mErr
 	}
+	for x := 0; x <= len(results)-1 ; x++{
+		results[x].Comments = getComments(results[x].UniqueId)
+	}
 	//fmt.Println(results)
 	json.NewEncoder(w).Encode(results)
 	return nil
