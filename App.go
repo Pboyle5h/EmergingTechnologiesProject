@@ -73,7 +73,8 @@ func initRouter() *mux.Router {
 	// adapted from https://auth0.com/blog/authentication-in-golang/
 	r.Handle("/register", errorHandler(Register)).Methods("POST")
 	r.Handle("/login", errorHandler(loginHandler)).Methods("POST")
-	r.Handle("/blogs", errorHandler(createBlog)).Methods("POST")
+	//r.Handle("/login", appHandler(login2Handler)).Methods("POST")
+	r.Handle("/user", errorHandler(createBlog)).Methods("POST")
 	r.Handle("/blogs", errorHandler(getBlogs)).Methods("GET")
 	r.Handle("/user", errorHandler(getUserBlogs)).Methods("GET")
 	r.Handle("/user", errorHandler(deleteBlogPost)).Methods("DELETE") // yet to be implemented
@@ -137,6 +138,31 @@ type (
 		Password string
 	}
 )
+
+// adapted from https://devcenter.heroku.com/articles/go-sessions
+// func login2Handler(w http.ResponseWriter, r *http.Request) (int, error) {
+// 	decoder := json.NewDecoder(r.Body)
+// 	var login LoginCreds
+// 	err := decoder.Decode(&login)
+// 	if err != nil {
+// 		return http.StatusInternalServerError, err
+// 	}
+// 	//fmt.Println(login.Username)
+// 	defer r.Body.Close()
+// 	if err := loginValidation(login.Username, login.Password); err == nil {
+// 		//fmt.Println("success")
+// 		session, err := store.Get(r, "session")
+// 		if err != nil {
+// 			http.Error(w, err.Error(), http.StatusInternalServerError)
+// 		}
+// 		session.Values["username"] = login.Username
+// 		session.Values["password"] = login.Password
+// 		session.Save(r, w)
+// 	} else {
+// 		return http.StatusInternalServerError, err
+// 	}
+// 	return http.StatusOK, nil
+// }
 
 // adapted from https://devcenter.heroku.com/articles/go-sessions
 func loginHandler(w http.ResponseWriter, r *http.Request) error {
@@ -395,6 +421,23 @@ func errorHandler(f func(w http.ResponseWriter, r *http.Request) error) http.Han
 		default:
 			log.Println(err)
 			http.Error(w, "oops", http.StatusInternalServerError)
+		}
+	}
+}
+
+type appHandler func(http.ResponseWriter, *http.Request) (int, error)
+
+// Our appHandler type will now satisify http.Handler
+func (fn appHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if status, err := fn(w, r); err != nil {
+		switch status {
+		case http.StatusNotFound:
+			http.Error(w, "task not found", http.StatusNotFound)
+		case http.StatusInternalServerError:
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		default:
+			// Catch any other errors we haven't explicitly handled
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		}
 	}
 }
