@@ -31,8 +31,8 @@
               <h3>Comments</h3>
               <ul>
                <li ng-repeat="comment in post.comments">
-                 "{{comment.cbody}}"
-                 <cite>- <b>{{comment.cauthor}}</b></cite>
+                 "{{comment[0].cbody}}"
+                 <cite>- <b>{{comment[0].cauthor}}</b></cite>
                </li>
               </ul>
               <form name="commentForm" ng-submit="commentForm.$valid && commentCtrl.addComment(post)" novalidate>

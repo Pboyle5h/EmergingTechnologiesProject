@@ -13,6 +13,9 @@ blog.config(function($routeProvider, $locationProvider){
   $locationProvider.html5Mode(true); // takes the # out of the url
 });
 
+blog.run(function($rootScope){
+  $rootScope.username = "";
+});
 
 blog.controller('RegisterCtrl', function($scope, $http, $window){
   //console.log("called")
@@ -21,7 +24,7 @@ blog.controller('RegisterCtrl', function($scope, $http, $window){
                      Email: $scope.email, Password: $scope.password}).
       error(logError).
       success(function(data) {
-        $window.location.href="/";
+        $window.location.href="/login";
       });
   };
 });
@@ -46,18 +49,39 @@ blog.controller('MainCtrl', function($scope, $timeout){
   $timeout(text4, 2000);
 });
 
-blog.controller('LoginCtrl', function($scope, $http, $window){
+blog.controller('NavCtrl', function($scope, $rootScope, authService){
+  //$scope.isAuth = authService.isAuth();
+  $scope.isAuth = ($rootScope.username != "");
+  console.log("username: " + $rootScope.username);
+  $scope.username = $rootScope.username;
+});
+
+// blog.controller('LoginCtrl', function($scope, $http, $window, authService){
+//   $scope.login = function(){
+//     $http.post('/login', {Username : $scope.username, Password : $scope.password}).
+//       error(function(){
+//         logError;
+//         //console.log("error");
+//         $scope.invalidLogin = !$scope.invalidLogin;
+//       }).
+//       success(function(){
+//         authService.setUsername($scope.username);
+//         authService.setAuth;
+//         $window.location.href="/";
+//       });
+//   };
+// });
+blog.controller('LoginCtrl', function($scope, $http, $window, authService){
   $scope.login = function(){
-    $http.post('/login', {Username : $scope.username, Password : $scope.password}).
-      error(function(){
-        logError;
-        //console.log("error");
-        $scope.invalidLogin = !$scope.invalidLogin;
-      }).
-      success(function(){
-        //console.log("success");
-        $window.location.href="/user";
-      });
+    authService.Login($scope.username, $scope.password, function(response){
+        if(response.success){
+          authService.setCredentials($scope.username, $scope.password);
+          $window.location.href='/';
+        } else {
+          console.log(response.status);
+          $scope.invalidLogin = true;
+        }
+    });
   };
 });
 
@@ -96,7 +120,7 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
       CreatedOn: Date.now()}).
     error(logError).
     success(function(){
-      $window.location.href="/user";
+      $window.location.href="/";
     });
     };
 
@@ -145,21 +169,9 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
        CreatedOn: Date.now(), Comments: []}).
      error(logError).
      success(function(){
-       $window.location.href="/blogs";
+       $window.location.href="/";
      });
      };
-
-    //  blog.deletePost = function(post){
-    //    blog.post = post;
-    //    console.log(blog.post);
-    //    $http.delete('/user', {UniqueId : post.uniqueid, Title :post.title,
-    //     Body: blog.post.body, Author: post.author ,Likes: post.likes,
-    //     CreatedOn : post.createon, Comments : post.comments}).
-    //    error(logError).
-    //    success(function(){
-    //      $window.location.href="/blogs";
-    //    })
-    //  };
 
      blog.deletePost = function(post) {
     $http({
@@ -209,3 +221,22 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
 var logError = function(data, status) {
    console.log('code '+status+': '+data);
  };
+
+blog.factory('authService', function($rootScope, $http) {
+
+  var service = {};
+
+  service.Login = function(username, password, callback){
+    $http.post('/login', {Username: username, Password: password}).
+    success(function(response){
+      callback(response);
+    });
+  }
+
+  service.setCredentials = function(username, password){
+    $rootScope.username = username;
+  };
+
+  return service;
+
+});

@@ -224,12 +224,12 @@ func createBlog(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	currentUser = "aaa"
+	//currentUser = "aaa"
 	resultingBlogID := User{}
 	u := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
-	err = u.Find(bson.M{"username" : currentUser}).Select(bson.M{"blogposts" : 1}).One(&resultingBlogID)
+	err = u.Find(bson.M{"username": currentUser}).Select(bson.M{"blogposts": 1}).One(&resultingBlogID)
 	resultingBlogID.Blogposts = append(resultingBlogID.Blogposts, blog.UniqueId)
-	err = u.Update(bson.M{"username" : currentUser}, bson.M{"$set" : bson.M{"blogposts": resultingBlogID}} )
+	err = u.Update(bson.M{"username": currentUser}, bson.M{"$set": bson.M{"blogposts": resultingBlogID}})
 
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
 	err = c.Insert(&Blog{blog.UniqueId, blog.Title, blog.Body, blog.Author, blog.Likes, blog.CreatedOn, blog.Comments})
@@ -260,7 +260,7 @@ func getUserBlogs(w http.ResponseWriter, r *http.Request) error {
 	currentUserBlogs = nil
 
 	fmt.Println("Getting user blogs started")
-	currentUser = "aaa"
+	//currentUser = "aaa"
 
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
 	resultingBlogID := User{}
@@ -269,7 +269,7 @@ func getUserBlogs(w http.ResponseWriter, r *http.Request) error {
 	fmt.Println(resultingBlogID.Blogposts)
 	if err != nil {
 		// TODO: This exits the cript if the query fails to find the user, needs to be changed
-		log.Fatal(err)
+		return err
 	}
 	if resultingBlogID.Blogposts != nil {
 		blogData := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
@@ -313,7 +313,6 @@ func deleteBlogPost(w http.ResponseWriter, r *http.Request) error {
 	var blog Blog
 	err := decoder.Decode(&blog)
 
-
 	fmt.Println("Remove actual blog")
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
 	err = c.Remove(bson.M{"uniqueid": blog.UniqueId})
@@ -325,16 +324,16 @@ func deleteBlogPost(w http.ResponseWriter, r *http.Request) error {
 	var tempBlogArray []string
 	resultingBlogID := User{}
 	u := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
-	err = u.Find(bson.M{"username" : currentUser}).Select(bson.M{"blogposts" : 1}).One(&resultingBlogID)
+	err = u.Find(bson.M{"username": currentUser}).Select(bson.M{"blogposts": 1}).One(&resultingBlogID)
 	if err != nil {
 		return err
 	}
-	for x := 0; x <= len(resultingBlogID.Blogposts)-1; x++{
-		if resultingBlogID.Blogposts[x] != blog.UniqueId{
+	for x := 0; x <= len(resultingBlogID.Blogposts)-1; x++ {
+		if resultingBlogID.Blogposts[x] != blog.UniqueId {
 			tempBlogArray = append(tempBlogArray, (resultingBlogID.Blogposts[x]))
 		}
 	}
-	err = u.Update(bson.M{"username" : currentUser}, bson.M{"$set" : bson.M{"blogposts": tempBlogArray}} )
+	err = u.Update(bson.M{"username": currentUser}, bson.M{"$set": bson.M{"blogposts": tempBlogArray}})
 	if err != nil {
 		return err
 	}
