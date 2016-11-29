@@ -1,6 +1,7 @@
 // adapated from https://www.reddit.com/r/golang/comments/2tp5ho/updated_my_ggap_stack_web_app_tutorial_slothful/
 var blog = angular.module('blogApp', ['ngRoute']);
 
+
 blog.config(function($routeProvider, $locationProvider){
   $routeProvider
   .when('/', {templateUrl: '/partials/main.html'})
@@ -89,6 +90,13 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
 
    var blog = this;
    blog.title = "Blogs";
+
+   $(window).keydown(function(event){
+    if((event.which== 13) && ($(event.target)[0]!=$("textarea")[0])) {
+      event.preventDefault();
+      return false;
+    }
+  });
 
    blog.posts = {};
   //  $http.get('https://s3-us-west-2.amazonaws.com/s.cdpn.io/110131/posts_1.json').success(function(data){

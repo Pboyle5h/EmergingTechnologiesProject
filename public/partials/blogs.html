@@ -1,15 +1,16 @@
 <div ng-controller="BlogController as blog">
+               <button type="button" class="btn btn-primary btn-circle btn-xl" ng-click="blog.selectTab('new')"><i class="glyphicon glyphicon-plus"></i></button>
+
       <div class="content">
         <div class="container">
           <div class="row">
-             <button type="button" class="btn btn-primary btn-circle btn-xl" ng-click="blog.selectTab('new')"><i class="glyphicon glyphicon-plus"></i></button>
             <ul class="post-grid" ng-show="blog.isSelected('blog')">
           <li ng-repeat="post in blog.posts" class="col-s-4" ng-class="{ 'reset-s' : $index%3==0 }" ng-click="blog.selectTab($index)" >
             <h3>{{post.title}}</h3>
             <p>{{post.body[0] | limitTo:70}}...</p>
             <p class="fa fa-comment push-left"> {{post.comments.length}}
             </p>
-            <p class="fa fa-heart push-right"> {{post.likes}}
+            <p class="fa fa-heart push-left"> {{post.likes}}
             </p>
           </li>
         </ul>
@@ -17,10 +18,10 @@
           <div>
 
             <h2>{{post.title}}</h2>
-            <!-- <img src="{{post.image}}" ng-show="{{post.image}}"/> -->
+            
             <cite>by {{post.author}} on {{post.createdOn | date}}</cite>
             <div class="post-body">
-             <p ng-repeat="paragraph in post.body">
+             <p class="blogPost" ng-repeat="paragraph in post.body">
                {{paragraph}}
              </p>
             </div>
@@ -50,11 +51,13 @@
         <div class="post" ng-show="blog.isSelected('new')">
           <h2>Add New Post</h2>
 
-          <form name="postForm" ng-submit=" blog.addPost()" novalidate>
+          <form name="postForm" novalidate ng-submit="postForm.$valid && blog.addPost()" >
                   <h4>Title</h4>
                   <input type="text" ng-model="blog.post.title"/>
                   <h4>Body</h4>
-                  <textarea ng-model="blog.post.body" ng-list="/\n/" rows="10"></textarea>
+                  <p class = "error">Message must be over 70 characters</p>                  
+                  <textarea ng-model="blog.post.body" pattern=".{70,}" ng-list="/\n/" rows="10" required ng-minlength="70"></textarea>
+                  
                   <label for="">by:</label>
                   <input type="text" ng-model="blog.post.author" placeholder="Author Name" required/>
 

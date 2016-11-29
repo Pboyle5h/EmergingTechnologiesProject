@@ -1,26 +1,5 @@
-
-  <div ng-controller="UserBlogController as blog" style="background-color: white;">
-      <div class="topbar">
-        <div class="container">
-          <div class="row">
-            <div class="col-s-4">
-              <h1 ng-click="blog.selectTab('blog')" class="push-left">{{blog.title}}</h1>
-            </div>
-            <div class="offset-s-4 col-s-4">
-              <nav role='navigation' class="push-right">
-                <ul>
-                  <li><a href="#" ng-click="blog.selectTab('blog')">See All Posts</a></li> //
-                  <li><a href="#" ng-click="blog.selectTab('new')">Add New Post</a></li>
-                </ul>
-              </nav>
-            </div>
-          </div>
-        </div>
-
-
-
-      </div>
-
+<div ng-controller="BlogController as blog">
+               <button type="button" class="btn btn-primary btn-circle btn-xl" ng-click="blog.selectTab('new')"><i class="glyphicon glyphicon-plus"></i></button>
 
       <div class="content">
         <div class="container">
@@ -31,7 +10,7 @@
             <p>{{post.body[0] | limitTo:70}}...</p>
             <p class="fa fa-comment push-left"> {{post.comments.length}}
             </p>
-            <p class="fa fa-heart push-right"> {{post.likes}}
+            <p class="fa fa-heart push-left"> {{post.likes}}
             </p>
           </li>
         </ul>
@@ -39,54 +18,58 @@
           <div>
 
             <h2>{{post.title}}</h2>
-            <!-- <img src="{{post.image}}" ng-show="{{post.image}}"/> -->
+            
             <cite>by {{post.author}} on {{post.createdOn | date}}</cite>
             <div class="post-body">
-             <p ng-repeat="paragraph in post.body">
+             <p class="blogPost" ng-repeat="paragraph in post.body">
                {{paragraph}}
              </p>
             </div>
 
-            <div class="comments" ng-controller="UserCommentController as commentCtrl">
+            <div class="comments" ng-controller="CommentController as commentCtrl">
               <button class="fa fa-heart" ng-click="post.likes = post.likes+1"> {{post.likes}}</button>
               <h3>Comments</h3>
               <ul>
                <li ng-repeat="comment in post.comments">
-                 "{{comment.cbody}}"
-                 <cite>- <b>{{comment.cauthor}}</b></cite>
+                 "{{comment[0].cbody}}"
+                 <cite>- <b>{{comment[0].cauthor}}</b></cite>
                </li>
               </ul>
+              <form name="commentForm" ng-submit="commentForm.$valid && commentCtrl.addComment(post)" novalidate>
+
+
+                <h4>Add Comment</h4>
+                  <textarea ng-model="commentCtrl.comment.body" cols="30" rows="10" required></textarea>
+                <label for="">by:</label>
+                  <input type="text" ng-model="commentCtrl.comment.author" required placeholder="Name"/>
+
+                  <input type="submit" value="Submit" />
+                </form>
             </div>
         </div>
-        <form>
-          <button class="btn btn-primary" ng-click="blog.selectTab('edit')">Update Post></button>
-          <button class="btn btn-danger" ng-click="blog.deletePost(post)">Delete Post</button>
-        </form>
       </div>
         <div class="post" ng-show="blog.isSelected('new')">
           <h2>Add New Post</h2>
 
-          <form name="postForm" ng-submit=" blog.addPost()" novalidate>
+          <form name="postForm" novalidate ng-submit="postForm.$valid && blog.addPost()" >
                   <h4>Title</h4>
                   <input type="text" ng-model="blog.post.title"/>
                   <h4>Body</h4>
-                  <textarea ng-model="blog.post.body" ng-list="/\n/" rows="10"></textarea>
-                  <label for="">Featured Image URL</label>
-                  <!-- <input type="text" ng-model="blog.post.image" placeholder="http://placekitten.com/g/2000/600" /> -->
+                  <p class = "error">Message must be over 70 characters</p>                  
+                  <textarea ng-model="blog.post.body" pattern=".{70,}" ng-list="/\n/" rows="10" required ng-minlength="70"></textarea>
+                  
                   <label for="">by:</label>
                   <input type="text" ng-model="blog.post.author" placeholder="Author Name" required/>
 
                   <input type="submit" value="Submit" />
-                </select>
-            </form>
-          </div>
-          </div>
-        </div>
-        <div class="post" ng-show="blog.isSelected('edit')">
-          <div class="">
-            <textarea ng-model="blog.post.body" ng-list="/\n/" rows="10">{{post.body}}</textarea>
-            <button class="btn btn-primary" ng-click="blog.updatePost(post)">Update Post</button>
+                </select></form>
+
+            </div>
+
           </div>
         </div>
-    </div>
+
+
+   </div>
+
   </div>
