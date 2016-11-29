@@ -41,7 +41,15 @@ p {
 
 .registerForm{
   margin: 100px auto;
-  background-color: #ffffcc;
+  background-color: Black;
+  border: 1px solid black;
+  opacity: 0.8;
+  filter: alpha(opacity=60); /* For IE8 and earlier */
+  border-radius: 5px; 
+-moz-border-radius: 5px; 
+-webkit-border-radius: 5px; 
+border: 4px solid  white;
+
 }
 
 
@@ -65,6 +73,10 @@ ul.post-grid li {
   border: 1px solid black;
   opacity: 0.6;
   filter: alpha(opacity=60); /* For IE8 and earlier */
+  border-radius: 5px; 
+    -moz-border-radius: 5px; 
+    -webkit-border-radius: 5px; 
+    border: 2px solid white;
 }
 ul.post-grid li:hover {
  
@@ -123,19 +135,24 @@ form {
   margin-left: 10%;
   margin-right:10%;
   width: 80%;  
-  color: chartreuse;
+  color: white;
+  
 }
-input,
+
+
 textarea {
-  display: block;
+ 
   width: 100%;
   padding: 10px;
-  font-size: 1.1em;
-  
+  font-size: 1.1em;  
   background-color: Black;
   border: 1px solid black;
   opacity: 0.8;
   filter: alpha(opacity=60); /* For IE8 and earlier */
+  border-radius: 5px; 
+  -moz-border-radius: 5px; 
+  -webkit-border-radius: 5px; 
+  border: 2px solid white;
 }
 .ng-invalid.ng-dirty {
   border-color: red;
@@ -156,40 +173,45 @@ img {
   border-radius: 35px;
   float: right
 }
-input[type=text], select {
+input[type=text], input[type=password], input[type=email], input[type=submit], select {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
-    display: inline-block;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-    background-color: Black;
     border: 1px solid black;
+    background-color: black;
     opacity: 0.8;
     filter: alpha(opacity=60); /* For IE8 and earlier */
+    border-radius: 5px; 
+    -moz-border-radius: 5px; 
+    -webkit-border-radius: 5px; 
+    border: 2px solid white;
 }
-input[type=submit] {
-    width: 100%;
-    background-color: #337DFF;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  background-color: Black;
-  border: 1px solid black;
-  opacity: 0.8;
-  filter: alpha(opacity=60); /* For IE8 and earlier */
-}
+
 input[type=submit]:hover {
     background-color: #4286f4;    
 }
+
  .error{
   
-   color: darkorange; 
+   color: blue; 
    font-size: 18px;
    float: left;
    text-shadow: black;
  }
+.blogPost{
+  background-color: Black;
+  border: 1px solid black;
+  opacity: 0.8;
+  filter: alpha(opacity=60); /* For IE8 and earlier */
+  border-radius: 5px; 
+  -moz-border-radius: 5px; 
+  -webkit-border-radius: 5px; 
+  border: 2px solid blue;
+}
+
+.btn btn-primary btn-lg{
+  padding: 10000px;
+}

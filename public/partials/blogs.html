@@ -18,10 +18,10 @@
           <div>
 
             <h2>{{post.title}}</h2>
-            <!-- <img src="{{post.image}}" ng-show="{{post.image}}"/> -->
+            
             <cite>by {{post.author}} on {{post.createdOn | date}}</cite>
             <div class="post-body">
-             <p ng-repeat="paragraph in post.body">
+             <p class="blogPost" ng-repeat="paragraph in post.body">
                {{paragraph}}
              </p>
             </div>
