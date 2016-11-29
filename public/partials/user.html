@@ -1,4 +1,4 @@
-<div ng-controller="BlogController as blog">
+<div ng-controller="UserBlogController as blog">
                <button type="button" class="btn btn-primary btn-circle btn-xl" ng-click="blog.selectTab('new')"><i class="glyphicon glyphicon-plus"></i></button>
 
       <div class="content">
@@ -18,7 +18,7 @@
           <div>
 
             <h2>{{post.title}}</h2>
-            
+
             <cite>by {{post.author}} on {{post.createdOn | date}}</cite>
             <div class="post-body">
              <p class="blogPost" ng-repeat="paragraph in post.body">
@@ -26,7 +26,7 @@
              </p>
             </div>
 
-            <div class="comments" ng-controller="CommentController as commentCtrl">
+            <div class="comments" ng-controller="UserCommentController as commentCtrl">
               <button class="fa fa-heart" ng-click="post.likes = post.likes+1"> {{post.likes}}</button>
               <h3>Comments</h3>
               <ul>
@@ -55,9 +55,9 @@
                   <h4>Title</h4>
                   <input type="text" ng-model="blog.post.title"/>
                   <h4>Body</h4>
-                  <p class = "error">Message must be over 70 characters</p>                  
+                  <p class = "error">Message must be over 70 characters</p>
                   <textarea ng-model="blog.post.body" pattern=".{70,}" ng-list="/\n/" rows="10" required ng-minlength="70"></textarea>
-                  
+
                   <label for="">by:</label>
                   <input type="text" ng-model="blog.post.author" placeholder="Author Name" required/>
 
