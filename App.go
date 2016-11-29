@@ -229,7 +229,7 @@ func createBlog(w http.ResponseWriter, r *http.Request) error {
 	u := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
 	err = u.Find(bson.M{"username": currentUser}).Select(bson.M{"blogposts": 1}).One(&resultingBlogID)
 	resultingBlogID.Blogposts = append(resultingBlogID.Blogposts, blog.UniqueId)
-	err = u.Update(bson.M{"username": currentUser}, bson.M{"$set": bson.M{"blogposts": resultingBlogID}})
+	err = u.Update(bson.M{"username": currentUser}, bson.M{"$set": bson.M{"blogposts": resultingBlogID.Blogposts}})
 
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
 	err = c.Insert(&Blog{blog.UniqueId, blog.Title, blog.Body, blog.Author, blog.Likes, blog.CreatedOn, blog.Comments})
@@ -249,6 +249,9 @@ func getBlogs(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return mErr
 	}
+	for x := 0; x <= len(results)-1 ; x++{
+		results[x].Comments = getComments(results[x].UniqueId)
+	}
 	//fmt.Println(results)
 	json.NewEncoder(w).Encode(results)
 	return nil
@@ -259,13 +262,13 @@ func getBlogs(w http.ResponseWriter, r *http.Request) error {
 func getUserBlogs(w http.ResponseWriter, r *http.Request) error {
 	currentUserBlogs = nil
 
-	fmt.Println("Getting user blogs started")
-	//currentUser = "aaa"
+//	currentUser = "aaa"
 
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
 	resultingBlogID := User{}
 	//REturn blog id's from the user document
 	err = c.Find(bson.M{"username": currentUser}).Select(bson.M{"blogposts": 1, "_id": 0}).One(&resultingBlogID)
+	fmt.Println(resultingBlogID)
 	fmt.Println(resultingBlogID.Blogposts)
 	if err != nil {
 		// TODO: This exits the cript if the query fails to find the user, needs to be changed
@@ -280,7 +283,8 @@ func getUserBlogs(w http.ResponseWriter, r *http.Request) error {
 			resultBlog.Comments = getComments(resultingBlogID.Blogposts[i])
 			if err != nil {
 				// TODO: This exits the cript if the query fails to find the user, needs to be changed
-				log.Fatal(err)
+				fmt.Println("Error triggered")
+				//log.Fatal(err)
 			}
 			fmt.Println("Id: " + resultBlog.UniqueId)
 			fmt.Println("title " + resultBlog.Title)
