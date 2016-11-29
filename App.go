@@ -73,7 +73,7 @@ func initRouter() *mux.Router {
 	// adapted from https://auth0.com/blog/authentication-in-golang/
 	r.Handle("/register", errorHandler(Register)).Methods("POST")
 	r.Handle("/login", errorHandler(loginHandler)).Methods("POST")
-	r.Handle("/blogs", errorHandler(createBlog)).Methods("POST")
+	r.Handle("/user", errorHandler(createBlog)).Methods("POST")
 	r.Handle("/blogs", errorHandler(getBlogs)).Methods("GET")
 	r.Handle("/user", errorHandler(getUserBlogs)).Methods("GET")
 	r.Handle("/user", errorHandler(deleteBlogPost)).Methods("DELETE") // yet to be implemented

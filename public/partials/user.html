@@ -1,6 +1,5 @@
-<div ng-controller="BlogController as blog">
-               <button type="button" class="btn btn-primary btn-circle btn-xl" ng-click="blog.selectTab('new')"><i class="glyphicon glyphicon-plus"></i></button>
-
+ <div ng-controller="UserBlogController as blog" style="background-color: white;">
+      <button type="button" class="btn btn-primary btn-circle btn-xl" ng-click="blog.selectTab('new')"><i class="glyphicon glyphicon-plus"></i></button>
       <div class="content">
         <div class="container">
           <div class="row">
@@ -10,7 +9,7 @@
             <p>{{post.body[0] | limitTo:70}}...</p>
             <p class="fa fa-comment push-left"> {{post.comments.length}}
             </p>
-            <p class="fa fa-heart push-left"> {{post.likes}}
+            <p class="fa fa-heart push-right"> {{post.likes}}
             </p>
           </li>
         </ul>
@@ -18,35 +17,29 @@
           <div>
 
             <h2>{{post.title}}</h2>
-            
+            <!-- <img src="{{post.image}}" ng-show="{{post.image}}"/> -->
             <cite>by {{post.author}} on {{post.createdOn | date}}</cite>
             <div class="post-body">
-             <p class="blogPost" ng-repeat="paragraph in post.body">
-               {{paragraph}}
+             <p ng-repeat="paragraph in post.body">
+               {{post.body}}
              </p>
             </div>
 
-            <div class="comments" ng-controller="CommentController as commentCtrl">
+            <div class="comments" ng-controller="UserCommentController as commentCtrl">
               <button class="fa fa-heart" ng-click="post.likes = post.likes+1"> {{post.likes}}</button>
               <h3>Comments</h3>
               <ul>
                <li ng-repeat="comment in post.comments">
-                 "{{comment[0].cbody}}"
-                 <cite>- <b>{{comment[0].cauthor}}</b></cite>
+                 "{{comment.cbody}}"
+                 <cite>- <b>{{comment.cauthor}}</b></cite>
                </li>
               </ul>
-              <form name="commentForm" ng-submit="commentForm.$valid && commentCtrl.addComment(post)" novalidate>
-
-
-                <h4>Add Comment</h4>
-                  <textarea ng-model="commentCtrl.comment.body" cols="30" rows="10" required></textarea>
-                <label for="">by:</label>
-                  <input type="text" ng-model="commentCtrl.comment.author" required placeholder="Name"/>
-
-                  <input type="submit" value="Submit" />
-                </form>
             </div>
         </div>
+        <form>
+          <button class="btn btn-primary" ng-click="blog.selectTab('edit')">Update Post></button>
+          <button class="btn btn-danger" ng-click="blog.deletePost(post)">Delete Post</button>
+        </form>
       </div>
         <div class="post" ng-show="blog.isSelected('new')">
           <h2>Add New Post</h2>
@@ -56,20 +49,21 @@
                   <input type="text" ng-model="blog.post.title"/>
                   <h4>Body</h4>
                   <p class = "error">Message must be over 70 characters</p>                  
-                  <textarea ng-model="blog.post.body" pattern=".{70,}" ng-list="/\n/" rows="10" required ng-minlength="70"></textarea>
+                  <textarea ng-model="blog.post.body" ng-list="/\n/" rows="10" required ng-minlength="70"></textarea>
                   
                   <label for="">by:</label>
                   <input type="text" ng-model="blog.post.author" placeholder="Author Name" required/>
 
                   <input type="submit" value="Submit" />
                 </select></form>
-
-            </div>
-
+          </div>
           </div>
         </div>
-
-
-   </div>
-
+        <div class="post" ng-show="blog.isSelected('edit')">
+          <div class="">
+            <textarea ng-model="blog.post.body" ng-list="/\n/" rows="10">{{post.body}}</textarea>
+            <button class="btn btn-primary" ng-click="blog.updatePost(post)">Update Post</button>
+          </div>
+        </div>
+    </div>
   </div>
