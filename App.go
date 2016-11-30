@@ -304,7 +304,7 @@ func updateBlogPost(w http.ResponseWriter, r *http.Request) error {
 		return jErr
 	}
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
-	err = c.Update(bson.M{"uniqueId": blog.UniqueId},
+	err = c.Update(bson.M{"uniqueid": blog.UniqueId},
 		bson.M{"title": blog.Title})
 	if err != nil {
 		return err
@@ -363,20 +363,22 @@ func getComments(blogID string) []Comment {
 }
 
 //adapted from https://stevenwhite.com/building-a-rest-service-with-golang-3/ used to make connection to mongoDB database
-func insert(a User) {
+func insert(a User) error{
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
 	err = c.Insert(&User{a.Name, a.Username, a.Password, a.Email, nil})
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+	return nil
 }
 
-func insertComment(a Comment) {
+func insertComment(uniqid string, cbody string, cauthor string) error{
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Comments")
-	err = c.Insert(&Comment{a.CBlogID, a.CBody, a.CAuthor})
+	err = c.Insert(&Comment{uniqid, cbody, cauthor})
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+	return nil
 }
 
 // adapted from https://github.com/campoy/todo/blob/master/server/server.go
