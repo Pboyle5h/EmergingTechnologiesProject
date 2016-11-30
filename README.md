@@ -3,28 +3,28 @@
   The website allows for the basic CRUD operations in terms of blog posts, posting comments and user registration and login authentication
 
 ##Local installation
-    [Install GIT on your computer] (https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-    [Install Golang on your computer] (https://golang.org/)
-    [Clone the git repository] (https://github.com/Pboyle5h/EmergingTechnologiesProject)
-    Navigate to the EmergingTechnologiesProject repository folder.
-    Install the gorilla toolkit:
-    ```
-    go get github.com/gorilla/mux
-    ```
-    ####Run command:
-    ```
-    go build App.go
-    ```
-    ####Make sure you have a working internet connection and run command:
-    ```
-    go run App.go
-    ```
-    ####Open a web browser and go to:
-    Make sure port 4000 is not used by any other application.
-    ```
-    localhost:4000
-    ```
-    Fefer to the User Guide for further instructions.
+[Install GIT on your computer] (https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+[Install Golang on your computer] (https://golang.org/)
+[Clone the git repository] (https://github.com/Pboyle5h/EmergingTechnologiesProject)
+Navigate to the EmergingTechnologiesProject repository folder.
+Install the gorilla toolkit:
+```
+go get github.com/gorilla/mux
+```
+####Run command:
+```
+go build App.go
+```
+####Make sure you have a working internet connection and run command:
+```
+go run App.go
+```
+####Open a web browser and go to:
+Make sure port 4000 is not used by any other application.
+```
+localhost:4000
+```
+Fefer to the User Guide for further instructions.
 
 
 Online:
