@@ -20,13 +20,14 @@
           <div>
 
             <h2>{{post.title}}</h2>
-
+            
             <cite>by {{post.author}} on {{post.createdOn | date}}</cite>
             <div class="post-body">
-             <p ng-repeat="paragraph in post.body">
-               {{post.body}}
+             <p class="blogPost">
+               {{post.body[0] | limitTo:100000000}}
              </p>
             </div>
+
 
             <div class="comments" ng-controller="UserCommentController as commentCtrl">
               <button class="fa fa-heart" ng-click="post.likes = post.likes+1"> {{post.likes}}</button>

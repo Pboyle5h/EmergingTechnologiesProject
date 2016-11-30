@@ -20,7 +20,7 @@
             <cite>by {{post.author}} on {{post.createdOn | date}}</cite>
             <div class="post-body">
              <p class="blogPost">
-               {{post.body}}
+               {{post.body[0] | limitTo:100000000}}
              </p>
             </div>
 
