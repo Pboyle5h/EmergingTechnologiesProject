@@ -14,10 +14,11 @@ blog.config(function($routeProvider, $locationProvider){
 });
 
 blog.run(function($rootScope){
+  $rootScope.isAuth = false;
   $rootScope.username = "";
 });
 
-blog.controller('RegisterCtrl', function($scope, $http, $window){
+blog.controller('RegisterCtrl',function($scope, $http, $window){
   //console.log("called")
   $scope.register = function() {
     $http.post('/register', {Name: $scope.name, Username: $scope.username,
@@ -49,38 +50,38 @@ blog.controller('MainCtrl', function($scope, $timeout){
   $timeout(text4, 2000);
 });
 
-blog.controller('NavCtrl', function($scope, $rootScope, authService){
-  //$scope.isAuth = authService.isAuth();
-  $scope.isAuth = ($rootScope.username != "");
-  console.log("username: " + $rootScope.username);
-  $scope.username = $rootScope.username;
-});
-
-// blog.controller('LoginCtrl', function($scope, $http, $window, authService){
-//   $scope.login = function(){
-//     $http.post('/login', {Username : $scope.username, Password : $scope.password}).
-//       error(function(){
-//         logError;
-//         //console.log("error");
-//         $scope.invalidLogin = !$scope.invalidLogin;
-//       }).
-//       success(function(){
-//         authService.setUsername($scope.username);
-//         authService.setAuth;
-//         $window.location.href="/";
-//       });
-//   };
+// blog.controller('NavCtrl',function($scope, authService, $rootScope){
+//   // //$scope.isAuth = authService.isAuth();
+//   //
+//   // //console.log("username: " + authService.getCredentials());
+//   // console.log("username:" + $rootScope.username);
+//   // //$scope.username = authService.getCredentials();
+//   // $scope.username = $rootScope.username;
 // });
-blog.controller('LoginCtrl', function($scope, $http, $window, authService){
+
+blog.controller('LoginCtrl', function($scope, $http, $window, $location,authService){
   $scope.login = function(){
-    authService.Login($scope.username, $scope.password, function(response){
-        if(response.success){
-          authService.setCredentials($scope.username, $scope.password);
-          $window.location.href='/';
+    authService.Login($scope.username, $scope.password, function(response, status){
+        if(status == 200){
+           //authService.setCredentials(response.username, response.password);
+          //$window.location.href='/';
+          $location.path("/");
         } else {
           console.log(response.status);
           $scope.invalidLogin = true;
         }
+    });
+  };
+});
+
+blog.controller('LogoutCtrl', function($scope, $http, $window, $location, authService){
+  $scope.logout = function(){
+    authService.Logout($scope.username, function(response, status){
+      if(status == 200){
+        $location.path("/");
+      }else {
+        console.log(response.status);
+      }
     });
   };
 });
@@ -229,21 +230,32 @@ var logError = function(data, status) {
    console.log('code '+status+': '+data);
  };
 
-blog.factory('authService', function($rootScope, $http) {
+blog.factory('authService', function($http, $rootScope) {
 
   var service = {};
-
+  //var username = "";
   service.Login = function(username, password, callback){
     $http.post('/login', {Username: username, Password: password}).
-    success(function(response){
-      callback(response);
+    success(function(response, status){
+      console.log(response + " "  + status);
+      console.log("username from service.login : " + username );
+      //service.setCredentials(username, password);
+      //service.setCredentials(username, password);
+      $rootScope.isAuth = true;
+      $rootScope.username = username;
+      callback(response, status);
     });
   }
 
-  service.setCredentials = function(username, password){
-    $rootScope.username = username;
-  };
-
+  // service.setCredentials = function(username, password){
+  //   this.username = username;
+  //   console.log("set creds function " + username);
+  // };
+  //
+  // service.getCredentials = function(){
+  //   console.log("get creds " +  this.username);
+  //   return this.username;
+  // }
   return service;
 
 });

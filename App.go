@@ -157,6 +157,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request) error {
 		session.Values["username"] = login.Username
 		session.Values["password"] = login.Password
 		session.Save(r, w)
+		w.Header().Add("username", currentUser)
+		w.Header().Add("password", login.Password)
 	} else {
 		return err
 	}
@@ -250,7 +252,7 @@ func getBlogs(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return mErr
 	}
-	for x := 0; x <= len(results)-1 ; x++{
+	for x := 0; x <= len(results)-1; x++ {
 		results[x].Comments = getComments(results[x].UniqueId)
 	}
 	//fmt.Println(results)
@@ -258,12 +260,10 @@ func getBlogs(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-//func getUserBlogs(w http.ResponseWriter, r *http.Request) error {
-
 func getUserBlogs(w http.ResponseWriter, r *http.Request) error {
 	currentUserBlogs = nil
 
-//	currentUser = "aaa"
+	//	currentUser = "aaa"
 
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
 	resultingBlogID := User{}
@@ -392,6 +392,8 @@ func errorHandler(f func(w http.ResponseWriter, r *http.Request) error) http.Han
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := f(w, r)
 		if err == nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
 			return
 		}
 		switch err.(type) {
