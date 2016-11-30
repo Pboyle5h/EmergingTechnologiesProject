@@ -257,8 +257,6 @@ func getBlogs(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-//func getUserBlogs(w http.ResponseWriter, r *http.Request) error {
-
 func getUserBlogs(w http.ResponseWriter, r *http.Request) error {
 	currentUserBlogs = nil
 
@@ -389,6 +387,8 @@ func errorHandler(f func(w http.ResponseWriter, r *http.Request) error) http.Han
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := f(w, r)
 		if err == nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
 			return
 		}
 		switch err.(type) {

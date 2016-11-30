@@ -1,5 +1,8 @@
- <div ng-controller="UserBlogController as blog" style="background-color: white;">
-      <button type="button" class="btn btn-primary btn-circle btn-xl" ng-click="blog.selectTab('new')"><i class="glyphicon glyphicon-plus"></i></button>
+
+<div ng-controller="UserBlogController as blog">
+               <button type="button" class="btn btn-primary btn-circle btn-xl" ng-click="blog.selectTab('new')"><i class="glyphicon glyphicon-plus"></i></button>
+
+
       <div class="content">
         <div class="container">
           <div class="row">
@@ -17,7 +20,7 @@
           <div>
 
             <h2>{{post.title}}</h2>
-            <!-- <img src="{{post.image}}" ng-show="{{post.image}}"/> -->
+
             <cite>by {{post.author}} on {{post.createdOn | date}}</cite>
             <div class="post-body">
              <p ng-repeat="paragraph in post.body">
@@ -51,6 +54,7 @@
                   <p class = "error">Message must be over 70 characters</p>                  
                   <textarea ng-model="blog.post.body" ng-list="/\n/" rows="10" required ng-minlength="70"></textarea>
                   
+
                   <label for="">by:</label>
                   <input type="text" ng-model="blog.post.author" placeholder="Author Name" required/>
 

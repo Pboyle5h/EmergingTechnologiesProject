@@ -13,9 +13,9 @@ blog.config(function($routeProvider, $locationProvider){
   $locationProvider.html5Mode(true); // takes the # out of the url
 });
 
-blog.run(function($rootScope){
-  $rootScope.username = "";
-});
+// blog.run(function($rootScope){
+//   $rootScope.username = ""
+// });
 
 blog.controller('RegisterCtrl', function($scope, $http, $window){
   //console.log("called")
@@ -51,31 +51,16 @@ blog.controller('MainCtrl', function($scope, $timeout){
 
 blog.controller('NavCtrl', function($scope, $rootScope, authService){
   //$scope.isAuth = authService.isAuth();
-  $scope.isAuth = ($rootScope.username != "");
-  console.log("username: " + $rootScope.username);
-  $scope.username = $rootScope.username;
+  $scope.isAuth = (authService.getCredentials() != "");
+  console.log("username: " + authService.getCredentials());
+  $scope.username = authService.getCredentials();
 });
 
-// blog.controller('LoginCtrl', function($scope, $http, $window, authService){
-//   $scope.login = function(){
-//     $http.post('/login', {Username : $scope.username, Password : $scope.password}).
-//       error(function(){
-//         logError;
-//         //console.log("error");
-//         $scope.invalidLogin = !$scope.invalidLogin;
-//       }).
-//       success(function(){
-//         authService.setUsername($scope.username);
-//         authService.setAuth;
-//         $window.location.href="/";
-//       });
-//   };
-// });
 blog.controller('LoginCtrl', function($scope, $http, $window, authService){
   $scope.login = function(){
-    authService.Login($scope.username, $scope.password, function(response){
-        if(response.success){
-          authService.setCredentials($scope.username, $scope.password);
+    authService.Login($scope.username, $scope.password, function(response, status){
+        if(status == 200){
+          //authService.setCredentials($scope.username, $scope.password);
           $window.location.href='/';
         } else {
           console.log(response.status);
@@ -232,18 +217,24 @@ var logError = function(data, status) {
 blog.factory('authService', function($rootScope, $http) {
 
   var service = {};
-
+  var username = "";
   service.Login = function(username, password, callback){
     $http.post('/login', {Username: username, Password: password}).
-    success(function(response){
-      callback(response);
+    success(function(response, status){
+      console.log(response + " "  + status);
+      console.log("username from service.login : " + username );
+      service.setCredentials(username, password);
+      callback(response, status);
     });
   }
 
   service.setCredentials = function(username, password){
-    $rootScope.username = username;
+    username = username;
   };
 
+  service.getCredentials = function(){
+    return username;
+  }
   return service;
 
 });
