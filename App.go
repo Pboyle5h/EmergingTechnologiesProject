@@ -73,6 +73,7 @@ func initRouter() *mux.Router {
 	// adapted from https://auth0.com/blog/authentication-in-golang/
 	r.Handle("/register", errorHandler(Register)).Methods("POST")
 	r.Handle("/login", errorHandler(loginHandler)).Methods("POST")
+	r.Handle("/logout", errorHandler(logoutHandler)).Methods("POST")
 	r.Handle("/user", errorHandler(createBlog)).Methods("POST")
 	r.Handle("/blogs", errorHandler(getBlogs)).Methods("GET")
 	r.Handle("/user", errorHandler(getUserBlogs)).Methods("GET")
@@ -183,19 +184,19 @@ func loginValidation(username string, password string) error {
 	}
 }
 
-func logoutHandler(w http.ResponseWriter, req *http.Request) {
+func logoutHandler(w http.ResponseWriter, req *http.Request) error {
 	session, err := store.Get(req, "session")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return err
 	}
 	session.Values["username"] = ""
 	if err := session.Save(req, w); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return err
 	}
 	currentUser = ""
-	http.Redirect(w, req, "/", 302)
+	return err
 }
 
 type (

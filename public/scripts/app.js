@@ -8,7 +8,9 @@ blog.config(function($routeProvider, $locationProvider){
   .when('/blogs', {templateUrl: '/partials/blogs.html'})
   .when('/register', {templateUrl: '/partials/register.html'})
   .when('/login', {templateUrl: '/partials/login.html'})
-  .when('/user', {templateUrl: '/partials/user.html'});
+  .when('/user', {templateUrl: '/partials/user.html'})
+  .when('/logout', {templateUrl: '/partials/logout.html'})
+  .when('/about', {templateUrl: '/partials/about.html'});
 
   $locationProvider.html5Mode(true); // takes the # out of the url
 });
@@ -49,15 +51,6 @@ blog.controller('MainCtrl', function($scope, $timeout){
   $timeout(text3, 1500);
   $timeout(text4, 2000);
 });
-
-// blog.controller('NavCtrl',function($scope, authService, $rootScope){
-//   // //$scope.isAuth = authService.isAuth();
-//   //
-//   // //console.log("username: " + authService.getCredentials());
-//   // console.log("username:" + $rootScope.username);
-//   // //$scope.username = authService.getCredentials();
-//   // $scope.username = $rootScope.username;
-// });
 
 blog.controller('LoginCtrl', function($scope, $http, $window, $location,authService){
   $scope.login = function(){
@@ -246,16 +239,6 @@ blog.factory('authService', function($http, $rootScope) {
       callback(response, status);
     });
   }
-
-  // service.setCredentials = function(username, password){
-  //   this.username = username;
-  //   console.log("set creds function " + username);
-  // };
-  //
-  // service.getCredentials = function(){
-  //   console.log("get creds " +  this.username);
-  //   return this.username;
-  // }
   return service;
 
 });
