@@ -52,7 +52,7 @@ blog.controller('MainCtrl', function($scope, $timeout){
   $timeout(text4, 2000);
 });
 
-blog.controller('LoginCtrl', function($scope, $http, $window, $location,authService){
+blog.controller('LoginCtrl', function($scope, $http, $location,authService){
   $scope.login = function(){
     authService.Login($scope.username, $scope.password, function(response, status){
         if(status == 200){
@@ -67,16 +67,14 @@ blog.controller('LoginCtrl', function($scope, $http, $window, $location,authServ
   };
 });
 
-blog.controller('LogoutCtrl', function($scope, $http, $window, $location, authService){
+blog.controller('LogoutCtrl', function($scope, $http, $location, authService){
   $scope.logout = function(){
-    authService.Logout($scope.username, function(response, status){
-      if(status == 200){
-        $location.path("/");
-      }else {
-        console.log(response.status);
-      }
-    });
+    authService.Logout();
   };
+
+  $scope.changeMind = function(){
+    $location.path("/");
+  }
 });
 
 // adapted from https://codepen.io/nickmoreton/pen/mgtLK
@@ -223,7 +221,7 @@ var logError = function(data, status) {
    console.log('code '+status+': '+data);
  };
 
-blog.factory('authService', function($http, $rootScope) {
+blog.factory('authService', function($http, $rootScope, $location) {
 
   var service = {};
   //var username = "";
@@ -238,7 +236,18 @@ blog.factory('authService', function($http, $rootScope) {
       $rootScope.username = username;
       callback(response, status);
     });
-  }
+  };
+
+  service.Logout = function(){
+    $http.post('/logout').
+    success(function(response, status){
+      $rootScope.isAuth = false;
+      $rootScope.username = "";
+      $location.path("/");
+      //callback(response, status);
+    });
+  };
+
   return service;
 
 });

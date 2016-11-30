@@ -185,6 +185,7 @@ func loginValidation(username string, password string) error {
 }
 
 func logoutHandler(w http.ResponseWriter, req *http.Request) error {
+
 	session, err := store.Get(req, "session")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -195,6 +196,8 @@ func logoutHandler(w http.ResponseWriter, req *http.Request) error {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return err
 	}
+	w.Header().Add("username", "")
+	w.Header().Add("password", "")
 	currentUser = ""
 	return err
 }
