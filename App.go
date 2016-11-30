@@ -193,6 +193,7 @@ func logoutHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	currentUser = ""
+	currentUserBlogs = nil
 	http.Redirect(w, req, "/", 302)
 }
 
