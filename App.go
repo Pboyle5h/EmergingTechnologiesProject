@@ -128,7 +128,6 @@ func Register(w http.ResponseWriter, r *http.Request) error {
 		insert(a)
 	}
 	return err
-	//http.Redirect(w, r, "/", 302)
 }
 
 type (
@@ -146,10 +145,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	//fmt.Println(login.Username)
 	defer r.Body.Close()
 	if err := loginValidation(login.Username, login.Password); err == nil {
-		//fmt.Println("success")
 		session, err := store.Get(r, "session")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -171,8 +168,7 @@ func loginValidation(username string, password string) error {
 	result := User{}
 	err = c.Find(bson.M{"username": username}).Select(bson.M{"username": 1, "password": 1, "_id": 0}).One(&result)
 	if err != nil {
-		// TODO: This exits the cript if the query fails to find the user, needs to be changed
-		//log.Fatal(err)
+		return err
 	}
 	if result.Username == username && result.Password == password {
 		fmt.Println("Connection succesful")
