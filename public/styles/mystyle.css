@@ -61,9 +61,8 @@ ul.post-grid {
   list-style-type: none;
 }
 ul.post-grid li {
-  float: right;
-  padding: 20px;
-  width: 25%;
+  float: left;
+  width: 28%;
   cursor: pointer;
   color: #337DFF;
   transition: background linear 0.5s;
@@ -74,9 +73,9 @@ ul.post-grid li {
   opacity: 0.6;
   filter: alpha(opacity=60); /* For IE8 and earlier */
   border-radius: 5px; 
-    -moz-border-radius: 5px; 
-    -webkit-border-radius: 5px; 
-    border: 2px solid white;
+  -moz-border-radius: 5px; 
+  -webkit-border-radius: 5px; 
+  border: 2px solid white;
 }
 ul.post-grid li:hover {
  
@@ -110,6 +109,7 @@ h4{
  
 }
 .post cite {
+  
   display: inline-block;
   padding: 10px 0;
 }
@@ -214,4 +214,12 @@ input[type=submit]:hover {
 
 .btn btn-primary btn-lg{
   padding: 10000px;
+}
+
+cite{
+  float: right;
+  color: white;
+  text-shadow: black;
+
+
 }
