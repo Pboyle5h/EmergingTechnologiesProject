@@ -2,7 +2,7 @@
   We have created a single page, bloggin application in Golang, Angular JS and MongoDB.
   The website allows for the basic CRUD operations in terms of blog posts, posting comments and user registration and login authentication
 
-##Local installation:
+##Local installation
     1. [Install GIT on your computer] (https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
     2. [Install Golang on your computer] (https://golang.org/)
     3. [Clone the git repository] (https://github.com/Pboyle5h/EmergingTechnologiesProject)
