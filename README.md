@@ -6,7 +6,7 @@
 ####[Install GIT on your computer] (https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 ####[Install Golang on your computer] (https://golang.org/)
 ####[Clone the git repository] (https://github.com/Pboyle5h/EmergingTechnologiesProject)
-####Navigate to the EmergingTechnologiesProject repository folder.
+Navigate to the EmergingTechnologiesProject repository folder.
 ####Install the gorilla toolkit with the following command:
 ```
 go get github.com/gorilla/mux
@@ -25,30 +25,30 @@ Make sure port 4000 is not used by any other application.
 localhost:4000
 ```
 Fefer to the User Guide for further instructions.
+<br />
+<br />
+####Online Usage:
+Read the User Guide and click on the following hyperlink [Hosted Blog Page](https://goproject.herokuapp.com/)
+<br />
+<br />
+##User Guide:
+<br />
+####Registration:
+Click on the Register button in the top right corner.
+Input the data into the correct fields, in the correct format. (eg. email has to be in the "emailName"@"gmail.com" format)
+// *Limitation* The code does not currently validate whether a user with the same name already exists.
+Click submit
+You will be transported to the Login page automatically.
 
-
-Online:
-1. Read the User Guide
-2. Go to the following page : https://goproject.herokuapp.com/
-
-User Guide:
-
-  Registration:
-  1. Click on the Register button in the top right corner.
-  2. Input the data into the correct fields, in the correct format. (eg. email has to be in the "emailName"@"gmail.com" format)
-  // *Limitation* The code does not currently validate whether a user with the same name already exists.
-  3. Click submit
-  4. You will be transported to the Login page automatically.
-
-  Log in:
-  1. Click on the login button in the top right corner.
-  2. Input your login details.
-  3. Click submit and await response from the database.
-  ####Limitation
-  '''
-  Limitation The login function is currently partly working. The feedback is not correct as the user
-  can be looged in correctly but it will still be displayed as invalid login. This is to do with page State
-  '''
+Log in:
+1. Click on the login button in the top right corner.
+2. Input your login details.
+3. Click submit and await response from the database.
+####Limitation
+'''
+Limitation The login function is currently partly working. The feedback is not correct as the user
+can be looged in correctly but it will still be displayed as invalid login. This is to do with page State
+'''
 
   Tabs:
 
