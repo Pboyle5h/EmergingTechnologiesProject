@@ -147,7 +147,17 @@ form {
   margin-right:10%;
   width: 80%;  
   color: white;
+  padding: 30px;
   
+}
+.LOform{
+  margin-left: 10%;
+  margin-right:10%;
+  width: 80%;  
+  color: white;
+  padding: 30px;
+  text-align: center;
+
 }
 
 
