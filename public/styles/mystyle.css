@@ -212,14 +212,9 @@ input[type=submit]:hover {
   border: 2px solid blue;
 }
 
-.btn btn-primary btn-lg{
-  padding: 10000px;
-}
 
 cite{
   float: right;
   color: white;
   text-shadow: black;
-
-
 }
