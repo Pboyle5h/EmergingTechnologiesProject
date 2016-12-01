@@ -83,17 +83,8 @@ blog.controller('BlogController',function($http, $location){
    var blog = this;
    blog.title = "Blogs";
 
-   $(window).keydown(function(event){
-    if((event.which== 13) && ($(event.target)[0]!=$("textarea")[0])) {
-      event.preventDefault();
-      return false;
-    }
-  });
 
    blog.posts = {};
-  //  $http.get('https://s3-us-west-2.amazonaws.com/s.cdpn.io/110131/posts_1.json').success(function(data){
-  //    blog.posts = data;
-  //  });
   $http.get('/blogs').success(function(response) {
     console.log(response);
     blog.posts = response;
