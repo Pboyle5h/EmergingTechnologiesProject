@@ -78,7 +78,7 @@ blog.controller('LogoutCtrl', function($scope, $http, $location, authService){
 });
 
 // adapted from https://codepen.io/nickmoreton/pen/mgtLK
-blog.controller('BlogController',function($http, $location){
+blog.controller('BlogController',function($scope, $http, $location){
 
    var blog = this;
    blog.title = "Blogs";
@@ -111,19 +111,12 @@ blog.controller('BlogController',function($http, $location){
    };
 
    blog.post = {};
-   //
-  //  blog.addPost = function(){
-  //   var uniqueid = (Math.random() * 1000).toString();
-  //   $http.post('/blogs', {UniqueId : uniqueid, Title: blog.post.title,
-  //     Body: blog.post.body, Author: blog.post.author, Comments: [], Likes: 0,
-  //     CreatedOn: Date.now()}).
-  //   error(logError).
-  //   success(function(){
-  //     $window.location.href="/";
-  //   });
-  //   };
-  blog.addComment = function(post){
-    $http.post('/blogs', {CBlogID: post.uniqueid, CBody: $scope.body, CAuthor: $scope.author})
+
+   blog.addComment = function(post){
+     $scope.commentForm = {};
+    console.log("cbody: " + $scope.commentForm.commentBody);
+    $http.post('/blogs', {CBlogID: post.uniqueid, CBody: $scope.commentForm.commentBody,
+      CAuthor: $scope.commentForm.commentAuthor})
     .error(logError)
     .success(function(){
       $location.path("/");
@@ -204,15 +197,6 @@ blog.controller('BlogController',function($http, $location){
        })
      };
 
-  });
-
-  blog.controller('UserCommentController', function(){
-    this.comment = {};
-    this.addComment = function(post){
-      this.comment.createdOn = Date.now();
-      post.comments.push(this.comment);
-      this.comment ={};
-    };
   });
 
 var logError = function(data, status) {

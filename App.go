@@ -69,7 +69,7 @@ func initRouter() *mux.Router {
 	r.Handle("/logout", errorHandler(logoutHandler)).Methods("POST")
 	r.Handle("/user", errorHandler(createBlog)).Methods("POST")
 	r.Handle("/blogs", errorHandler(getBlogs)).Methods("GET")
-	//r.Handle("/blogs", errorHandler())
+	r.Handle("/blogs", errorHandler(insertComment)).Methods("POST")
 	r.Handle("/user", errorHandler(getUserBlogs)).Methods("GET")
 	r.Handle("/user", errorHandler(deleteBlogPost)).Methods("DELETE") // yet to be implemented
 	r.Handle("/user", errorHandler(updateBlogPost)).Methods("PUT")    // Yet to be implemented
@@ -304,12 +304,21 @@ func insert(a User) {
 	}
 }
 
-func insertComment(a Comment) {
-	c := mongoConnection.DB("heroku_lzbj5rj0").C("Comments")
-	err = c.Insert(&Comment{a.CBlogID, a.CBody, a.CAuthor})
+func insertComment(w http.ResponseWriter, r *http.Request) error {
+	fmt.Println("calling insertComment")
+	decoder := json.NewDecoder(r.Body)
+	var comment Comment
+	err := decoder.Decode(&comment)
+	fmt.Println(comment)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+	c := mongoConnection.DB("heroku_lzbj5rj0").C("Comments")
+	err = c.Insert(&Comment{comment.CBlogID, comment.CBody, comment.CAuthor})
+	if err != nil {
+		return err
+	}
+	return err
 }
 
 func createBlog(w http.ResponseWriter, r *http.Request) error {
