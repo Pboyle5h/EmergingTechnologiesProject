@@ -116,14 +116,6 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
 
  }]);
 
- blog.controller('CommentController', function(){
-   this.comment = {};
-   this.addComment = function(post){
-     this.comment.createdOn = Date.now();
-     post.comments.push(this.comment);
-     this.comment ={};
-   };
- });
 
  blog.controller('UserBlogController', ['$http', '$window', function($http, $window){
 

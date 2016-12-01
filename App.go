@@ -114,7 +114,6 @@ type (
 
 type (
 	Blog struct {
-		//_id       bson.ObjectId `bson:"_id"`
 		UniqueId  string   `json:"uniqueid"`
 		Title     string   `json:"title"`
 		Body      []string `json:"body"`
@@ -137,11 +136,13 @@ type (
 func Register(w http.ResponseWriter, r *http.Request) error {
 	decoder := json.NewDecoder(r.Body)
 	var user User
+	//Pull in the user data from the webpage
 	err := decoder.Decode(&user)
 	if err != nil {
 		return err
 	}
 	defer r.Body.Close()
+	//Put the data from the webpage into local go variables
 	u := user.Username
 	p := user.Password
 	e := user.Email
@@ -159,18 +160,19 @@ func Register(w http.ResponseWriter, r *http.Request) error {
 func loginHandler(w http.ResponseWriter, r *http.Request) error {
 	decoder := json.NewDecoder(r.Body)
 	var login LoginCreds
+	//Extract the login details from the webpage
 	err := decoder.Decode(&login)
 	if err != nil {
 		return err
 	}
-	//fmt.Println(login.Username)
 	defer r.Body.Close()
+	// Call login validation to check whether the login details are in the database
 	if err := loginValidation(login.Username, login.Password); err == nil {
-		//fmt.Println("success")
 		session, err := store.Get(r, "session")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
+		//save the login details in the local session
 		session.Values["username"] = login.Username
 		session.Values["password"] = login.Password
 		session.Save(r, w)
@@ -182,14 +184,16 @@ func loginHandler(w http.ResponseWriter, r *http.Request) error {
 	return err
 }
 
-func logoutHandler(w http.ResponseWriter, req *http.Request) error {
 
+func logoutHandler(w http.ResponseWriter, req *http.Request) error {
 	session, err := store.Get(req, "session")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return err
 	}
+	// Set session login values to nil
 	session.Values["username"] = ""
+	session.Values["password"] = ""
 	if err := session.Save(req, w); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return err
@@ -200,9 +204,8 @@ func logoutHandler(w http.ResponseWriter, req *http.Request) error {
 	return err
 }
 
-
+// Function not working on the angular side
 func updateBlogPost(w http.ResponseWriter, r *http.Request) error {
-	fmt.Println("called")
 	decoder := json.NewDecoder(r.Body)
 	var blog Blog
 	jErr := decoder.Decode(&blog)
@@ -218,8 +221,6 @@ func updateBlogPost(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-
-
 //Get functions
 func getComments(blogID string) []Comment {
 	commentData := mongoConnection.DB("heroku_lzbj5rj0").C("Comments")
@@ -229,10 +230,8 @@ func getComments(blogID string) []Comment {
 		log.Fatal(err)
 	}
 	if commentData != nil {
-		fmt.Println("Comments downloaded")
 		return resultComments
 	} else {
-		fmt.Println("No comments")
 		return nil
 	}
 }
@@ -244,10 +243,11 @@ func getBlogs(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return mErr
 	}
+	//Return the comments for each blog one by One
+	//Returning comments as a apart of the blog could not be implemented effectively
 	for x := 0; x <= len(results)-1; x++ {
 		results[x].Comments = getComments(results[x].UniqueId)
 	}
-	//fmt.Println(results)
 	json.NewEncoder(w).Encode(results)
 	return nil
 }
@@ -256,14 +256,12 @@ func getUserBlogs(w http.ResponseWriter, r *http.Request) error {
 	currentUserBlogs = nil
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
 	resultingBlogID := User{}
-	//REturn blog id's from the user document
+	//Return blog id's from the user document
 	err = c.Find(bson.M{"username": currentUser}).Select(bson.M{"blogposts": 1, "_id": 0}).One(&resultingBlogID)
-	fmt.Println(resultingBlogID)
-	fmt.Println(resultingBlogID.Blogposts)
 	if err != nil {
-		// TODO: This exits the cript if the query fails to find the user, needs to be changed
 		return err
 	}
+	//Check if the user has any blog posts if true then return the array
 	if resultingBlogID.Blogposts != nil {
 		blogData := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
 		resultBlog := Blog{}
@@ -272,9 +270,7 @@ func getUserBlogs(w http.ResponseWriter, r *http.Request) error {
 			err = blogData.Find(bson.M{"uniqueid": resultingBlogID.Blogposts[i]}).One(&resultBlog)
 			resultBlog.Comments = getComments(resultingBlogID.Blogposts[i])
 			if err != nil {
-				// TODO: This exits the cript if the query fails to find the user, needs to be changed
-				fmt.Println("Error triggered")
-				//log.Fatal(err)
+				return err
 			}
 			currentUserBlogs = append(currentUserBlogs, resultBlog)
 		}
@@ -288,8 +284,7 @@ func loginValidation(username string, password string) error {
 	result := User{}
 	err = c.Find(bson.M{"username": username}).Select(bson.M{"username": 1, "password": 1, "_id": 0}).One(&result)
 	if err != nil {
-		// TODO: This exits the cript if the query fails to find the user, needs to be changed
-		//log.Fatal(err)
+		return err
 	}
 	if result.Username == username && result.Password == password {
 		fmt.Println("Connection succesful")
@@ -326,14 +321,15 @@ func createBlog(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	//currentUser = "aaa"
 	resultingBlogID := User{}
 	u := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
+	//Update the users list of blog ID's for reference
 	err = u.Find(bson.M{"username": currentUser}).Select(bson.M{"blogposts": 1}).One(&resultingBlogID)
 	resultingBlogID.Blogposts = append(resultingBlogID.Blogposts, blog.UniqueId)
 	err = u.Update(bson.M{"username": currentUser}, bson.M{"$set": bson.M{"blogposts": resultingBlogID.Blogposts}})
 
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
+	//Insert new blog into the mongo database
 	err = c.Insert(&Blog{blog.UniqueId, blog.Title, blog.Body, blog.Author, blog.Likes, blog.CreatedOn, blog.Comments})
 	if err != nil {
 		log.Fatal(err)
@@ -344,19 +340,19 @@ func createBlog(w http.ResponseWriter, r *http.Request) error {
 
 //Delete Functions
 func deleteBlogPost(w http.ResponseWriter, r *http.Request) error {
-	fmt.Println("Delete post started")
 	decoder := json.NewDecoder(r.Body)
 	var blog Blog
 	err := decoder.Decode(&blog)
 
 	fmt.Println("Remove actual blog")
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
+	//Remove the blog from the collection
 	err = c.Remove(bson.M{"uniqueid": blog.UniqueId})
 	if err != nil {
 		return err
 	}
 
-	fmt.Println("Delete blog reference from user")
+	//Remove the blog ID from the user ID array
 	var tempBlogArray []string
 	resultingBlogID := User{}
 	u := mongoConnection.DB("heroku_lzbj5rj0").C("Users")

@@ -29,10 +29,15 @@
             </div>
 
 
+
             <div class="comments" ng-controller="UserCommentController as commentCtrl">
+
+            <div class="comments">
+           
+
               <h3>Comments</h3>
               <ul>
-               <li ng-repeat="comment in post.comments">
+               <li ng-repeat="comment in post.Comments">
                  "{{comment.cbody}}"
                  <cite>- <b>{{comment.cauthor}}</b></cite>
                </li>
@@ -69,7 +74,10 @@
           </div>
           </div>
         </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> ef174863a7e5352c0e669c6107b0578ac13e63cd
         <div class="post" ng-show="blog.isSelected('edit')">
           <div class="">
             <textarea ng-model="blog.post.body" ng-list="/\n/" rows="10" cols "10" wrap="hard">{{post.body}}</textarea>
