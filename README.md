@@ -1,6 +1,16 @@
 # EmergingTechnologiesProject
   We have created a single page, blogging application in Golang, Angular JS and MongoDB.
   The website allows for the basic CRUD operations in terms of blog posts, posting comments and user registration and login authentication
+  
+  Member of the group included:
+  
+  Pauric Boyle:[Pauric's Github](https://github.com/Pboyle5h)
+  
+  Eamon McNicholas:[Eamon's Github](https://github.com/DevEMCN)
+  
+  Alan Niemiec:[Alan's Github](https://github.com/sinderpl)
+  
+![solarized dualmode](https://github.com/Pboyle5h/EmergingTechnologiesProject/blob/master/ArchitectureDesign.png)
 ##Introduction 
 The Project scope was to design a single page web application with a go server. For our front end we used AngularJS and styled it using bootstrap. We used MongoDB as our database and hosted the whole thing on heroku. The idea of our project was to design a blog that let the user log in, create a post, view a post and delete a post. WE did hit limitations within this project which can be read in our wiki and our read me file.
 
