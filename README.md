@@ -4,11 +4,11 @@
   
   Member of the group included:
   
-  Pauric Boyle:[Pauric's Github](https://github.com/Pboyle5h)
+  Pauric Boyle: [Pauric's Github](https://github.com/Pboyle5h)
   
-  Eamon McNicholas:[Eamon's Github](https://github.com/DevEMCN)
+  Eamon McNicholas: [Eamon's Github](https://github.com/DevEMCN)
   
-  Alan Niemiec:[Alan's Github](https://github.com/sinderpl)
+  Alan Niemiec: [Alan's Github](https://github.com/sinderpl)
   
 ![solarized dualmode](https://github.com/Pboyle5h/EmergingTechnologiesProject/blob/master/ArchitectureDesign.png)
 ##Introduction 
@@ -85,3 +85,20 @@ Fefer to the User Guide for further instructions.
 5. Review the blog details. The frame surrounding the text fields will turn green if the input is valid and red if it is not/ or field is empty<br />
 6. Click the submit button at the bottom of the page.<br />
 7. You will be redirected to the home page. Navigate back to the User Page in order to view your new post.<br />
+
+
+####Table of Calls being made to the server:
+API URL | HTTP Method | Request Data | Response Data 
+------------ | ----------- | ----------- | -----------
+"/" | GET | None. | index.html and all required resources.
+"/blogs" | POST | Post Object and Session Cookie Object. | ThreadPost object that includes all posts.
+"/blogs" | GET | Post Object and Session Cookie Object. | ThreadPost object that includes all posts.
+"/register" | POST | Store Inputted Data to the databas | ???
+"/login" | POST | Compares the data entered with data in the database| ???
+"/logout" | POST | ???| ???
+"/user" | POST | ???| ???
+"/user" | PUT | ???| ???
+"/user" | DELETE | Deletes session cookies realted to user| ???
+"/user" | GET | Gets the user specific blogs from datatbse | user specific blog returned
+
+
