@@ -1,7 +1,16 @@
 # EmergingTechnologiesProject
   We have created a single page, blogging application in Golang, Angular JS and MongoDB.
   The website allows for the basic CRUD operations in terms of blog posts, posting comments and user registration and login authentication
+##Introduction 
+The Project scope was to design a single page web application with a go server. For our front end we used AngularJS and styled it using bootstrap. We used MongoDB as our database and hosted the whole thing on heroku. The idea of our project was to design a blog that let the user log in, create a post, view a post and delete a post. WE did hit limitations within this project which can be read in our wiki and our read me file.
 
+##Online Usage:
+Our website is hosted on herohu at the following URL [Hosted Blog Page](https://goproject.herokuapp.com/)
+Read the User Guide for instruction on how to interact with the web application. 
+
+Heroku is designed to deploy from the master branch on git so every push to master made heroku spin up a new instance of our web application.
+<br />
+<br />
 ##Local installation
 ####[Install GIT on your computer] (https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 ####[Install Golang on your computer] (https://golang.org/)
@@ -27,10 +36,7 @@ localhost:4000
 Fefer to the User Guide for further instructions.
 <br />
 <br />
-##Online Usage:
-Read the User Guide and click on the following hyperlink [Hosted Blog Page](https://goproject.herokuapp.com/)
-<br />
-<br />
+
 ##User Guide:
 ####Registration:
 1. Click on the Register button in the top right corner.<br />
