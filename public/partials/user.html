@@ -1,9 +1,10 @@
 
 <div ng-controller="UserBlogController as blog">
-               <button type="button" class="btn btn-primary btn-circle btn-xl" ng-click="blog.selectTab('new')"><i class="glyphicon glyphicon-plus"></i></button>
 
 
       <div class="content">
+                       <button type="button" class="btn btn-primary btn-circle btn-xl" ng-click="blog.selectTab('new')"><i class="glyphicon glyphicon-plus"></i></button>
+
         <div class="container">
           <div class="row">
             <ul class="post-grid" ng-show="blog.isSelected('blog')">
@@ -66,7 +67,7 @@
         </div>
         <div class="post" ng-show="blog.isSelected('edit')">
           <div class="">
-            <textarea ng-model="blog.post.body" ng-list="/\n/" rows="10">{{post.body}}</textarea>
+            <textarea ng-model="blog.post.body" ng-list="/\n/" rows="10" cols "10" wrap="hard">{{post.body}}</textarea>
             <button class="btn btn-primary" ng-click="blog.updatePost(post)">Update Post</button>
           </div>
         </div>
