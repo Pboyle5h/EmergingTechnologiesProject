@@ -33,15 +33,15 @@
                  <cite>- <b>{{comment.cauthor}}</b></cite>
                </li>
               </ul>
-              <form name="commentForm" ng-submit="commentForm.$valid && blog.addComment(post)" novalidate>
-                <h4>Add Comment</h4>
-                  <textarea ng-model="commentForm.commentAuthor" cols="30" rows="10" required></textarea>
-                <label for="">by:</label>
-                  <input type="text" ng-model="commentForm.commentBody" required placeholder="Name"/>
-
-                  <input type="submit" value="Submit" />
-                </form>
             </div>
+            <form name="commentForm" ng-submit="blog.addComment(post)" novalidate>
+              <h4>Add Comment</h4>
+                <textarea ng-model="blog.cbody" cols="30" rows="10" required></textarea>
+              <label for="">by:</label>
+                <input type="text" ng-model="blog.cauthor" required placeholder="Name"/>
+
+                <input type="submit" value="Submit" />
+              </form>
         </div>
       </div>
 

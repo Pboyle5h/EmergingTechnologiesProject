@@ -104,10 +104,8 @@ blog.controller('BlogController',function($scope, $http, $location){
    blog.post = {};
 
    blog.addComment = function(post){
-     $scope.commentForm = {};
-    console.log("cbody: " + $scope.commentForm.commentBody);
-    $http.post('/blogs', {CBlogID: post.uniqueid, CBody: $scope.commentForm.commentBody,
-      CAuthor: $scope.commentForm.commentAuthor})
+    $http.post('/blogs', {CBlogID: post.uniqueid, CBody: $scope.blog.cbody,
+      CAuthor: $scope.blog.cauthor})
     .error(logError)
     .success(function(){
       $location.path("/");
