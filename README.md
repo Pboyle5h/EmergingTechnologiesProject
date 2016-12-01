@@ -90,9 +90,9 @@ Fefer to the User Guide for further instructions.
 ####Table of Calls being made to the server:
 API URL | HTTP Method | Request Data | Response Data 
 ------------ | ----------- | ----------- | -----------
-"/" | GET | None. | index.html and all required resources.
-"/blogs" | POST | Post Object and Session Cookie Object. | ThreadPost object that includes all posts.
-"/blogs" | GET | Post Object and Session Cookie Object. | ThreadPost object that includes all posts.
+"/" | GET | Request index.html. | index.html and all required resources.
+"/blogs" | POST | Get Blog post | All blogs.
+"/blogs" | GET | Get Specific blog post | get specific blog.
 "/register" | POST | Store Inputted Data to the databas | status code 200 if ok otherwise error code
 "/login" | POST | Compares the data entered with data in the database| status code 200 if ok otherwise error code
 "/logout" | POST | reset all data required for use of website to nil| status code 200 if ok otherwise error code
