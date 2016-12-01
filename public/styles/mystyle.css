@@ -111,16 +111,27 @@ h4{
 .post cite {
   
   display: inline-block;
-  padding: 10px 0;
+  padding: 2px;
 }
 .comments ul {
   margin: 0;
   padding: 0;
 }
 .comments ul li {
-  list-style-type: none;
-  padding: 20px 5px;
-  border-bottom: 1px #79B9D2 solid;
+  cursor: pointer;
+  color: white;
+  transition: background linear 0.5s;
+  border-bottom: 1px solid #3a8bab;
+  margin: 30px;
+  background-color: Black;
+  border: 1px solid black;
+  opacity: 0.6;
+  filter: alpha(opacity=60); /* For IE8 and earlier */
+  border-radius: 5px; 
+  -moz-border-radius: 5px; 
+  -webkit-border-radius: 5px; 
+  border: 2px solid white;
+  padding-top: 20px
 }
 .post.ng-hide {
   opacity: 0;
@@ -217,4 +228,8 @@ cite{
   float: right;
   color: white;
   text-shadow: black;
+}
+
+b{
+ padding-bottom: 20px;
 }
