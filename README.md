@@ -1,5 +1,5 @@
 # EmergingTechnologiesProject
-  We have created a single page, bloggin application in Golang, Angular JS and MongoDB.
+  We have created a single page, blogging application in Golang, Angular JS and MongoDB.
   The website allows for the basic CRUD operations in terms of blog posts, posting comments and user registration and login authentication
 
 ##Local installation
@@ -27,7 +27,7 @@ localhost:4000
 Fefer to the User Guide for further instructions.
 <br />
 <br />
-####Online Usage:
+##Online Usage:
 Read the User Guide and click on the following hyperlink [Hosted Blog Page](https://goproject.herokuapp.com/)
 <br />
 <br />
@@ -49,7 +49,6 @@ Read the User Guide and click on the following hyperlink [Hosted Blog Page](http
 1. Click on the Blogs tab in the left corner.<br />
 2. All the blogs that are currently in the database will be displayed.<br />
 3. Click on the blog that you are interested in reading.<br />
-
   **Limitation** A comments function has been implemented in GO but no fully implemented on the HTML and Angular side.
 
 ####User Page:
