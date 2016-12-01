@@ -32,7 +32,7 @@ blog.controller('RegisterCtrl',function($scope, $http, $window){
   };
 });
 
-blog.controller('MainCtrl', function($scope, $timeout){
+blog.controller('MainCtrl', function($scope, $timeout, $location){
   var text1 = function() {
      $scope.text1= "DRIFTERS";
    }
@@ -78,7 +78,7 @@ blog.controller('LogoutCtrl', function($scope, $http, $location, authService){
 });
 
 // adapted from https://codepen.io/nickmoreton/pen/mgtLK
-blog.controller('BlogController', ['$http', '$window', function($http, $window){
+blog.controller('BlogController',function($http, $location){
 
    var blog = this;
    blog.title = "Blogs";
@@ -102,22 +102,28 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
    };
 
    blog.post = {};
-
-   blog.addPost = function(){
-    var uniqueid = (Math.random() * 1000).toString();
-    $http.post('/blogs', {UniqueId : uniqueid, Title: blog.post.title,
-      Body: blog.post.body, Author: blog.post.author, Comments: [], Likes: 0,
-      CreatedOn: Date.now()}).
-    error(logError).
-    success(function(){
-      $window.location.href="/";
+   //
+  //  blog.addPost = function(){
+  //   var uniqueid = (Math.random() * 1000).toString();
+  //   $http.post('/blogs', {UniqueId : uniqueid, Title: blog.post.title,
+  //     Body: blog.post.body, Author: blog.post.author, Comments: [], Likes: 0,
+  //     CreatedOn: Date.now()}).
+  //   error(logError).
+  //   success(function(){
+  //     $window.location.href="/";
+  //   });
+  //   };
+  blog.addComment = function(post){
+    $http.post('/blogs', {CBlogID: post.uniqueid, CBody: $scope.body, CAuthor: $scope.author})
+    .error(logError)
+    .success(function(){
+      $location.path("/");
     });
-    };
+  };
+ });
 
- }]);
 
-
- blog.controller('UserBlogController', ['$http', '$window', function($http, $window){
+ blog.controller('UserBlogController', function($scope, $http, $location){
 
     var blog = this;
     blog.title = "Blogs";
@@ -151,7 +157,7 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
        CreatedOn: Date.now(), Comments: []}).
      error(logError).
      success(function(){
-       $window.location.href="/";
+       $location.path("/");
      });
      };
 
@@ -172,7 +178,7 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
             "Content-Type": "application/json;charset=utf-8"
         }
     }).success(function(res) {
-        $window.location.href="/";
+          $location.path("/");
     }).error(logError);
     };
 
@@ -189,7 +195,7 @@ blog.controller('BlogController', ['$http', '$window', function($http, $window){
        })
      };
 
-  }]);
+  });
 
   blog.controller('UserCommentController', function(){
     this.comment = {};

@@ -69,6 +69,7 @@ func initRouter() *mux.Router {
 	r.Handle("/logout", errorHandler(logoutHandler)).Methods("POST")
 	r.Handle("/user", errorHandler(createBlog)).Methods("POST")
 	r.Handle("/blogs", errorHandler(getBlogs)).Methods("GET")
+	//r.Handle("/blogs", errorHandler())
 	r.Handle("/user", errorHandler(getUserBlogs)).Methods("GET")
 	r.Handle("/user", errorHandler(deleteBlogPost)).Methods("DELETE") // yet to be implemented
 	r.Handle("/user", errorHandler(updateBlogPost)).Methods("PUT")    // Yet to be implemented
@@ -103,7 +104,6 @@ type (
 		Blogposts []string
 	}
 )
-
 
 type (
 	LoginCreds struct {
@@ -155,7 +155,6 @@ func Register(w http.ResponseWriter, r *http.Request) error {
 	return err
 }
 
-
 // adapted from https://devcenter.heroku.com/articles/go-sessions
 func loginHandler(w http.ResponseWriter, r *http.Request) error {
 	decoder := json.NewDecoder(r.Body)
@@ -183,7 +182,6 @@ func loginHandler(w http.ResponseWriter, r *http.Request) error {
 	}
 	return err
 }
-
 
 func logoutHandler(w http.ResponseWriter, req *http.Request) error {
 	session, err := store.Get(req, "session")
@@ -337,7 +335,6 @@ func createBlog(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-
 //Delete Functions
 func deleteBlogPost(w http.ResponseWriter, r *http.Request) error {
 	decoder := json.NewDecoder(r.Body)
@@ -369,7 +366,6 @@ func deleteBlogPost(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 

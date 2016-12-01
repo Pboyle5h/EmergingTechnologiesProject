@@ -33,13 +33,13 @@
                  <cite>- <b>{{comment.cauthor}}</b></cite>
                </li>
               </ul>
-              <form name="commentForm" ng-submit="commentForm.$valid && commentCtrl.addComment(post)" novalidate>
+              <form name="commentForm" ng-submit="commentForm.$valid && addComment(post)" novalidate>
 
 
                 <h4>Add Comment</h4>
-                  <textarea ng-model="commentCtrl.comment.body" cols="30" rows="10" required></textarea>
+                  <textarea ng-model="commentBody" cols="30" rows="10" required></textarea>
                 <label for="">by:</label>
-                  <input type="text" ng-model="commentCtrl.comment.author" required placeholder="Name"/>
+                  <input type="text" ng-model="commentAuthor" required placeholder="Name"/>
 
                   <input type="submit" value="Submit" />
                 </form>
