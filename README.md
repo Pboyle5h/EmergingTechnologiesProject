@@ -65,7 +65,7 @@ Fefer to the User Guide for further instructions.
 1. Click on the Blogs tab in the left corner.<br />
 2. All the blogs that are currently in the database will be displayed.<br />
 3. Click on the blog that you are interested in reading.<br />
-  **Limitation** A comments function has been implemented in GO but no fully implemented on the HTML and Angular side.
+4. Add comments to the blog post that you are reading. <br/>
 
 ####User Page:
 1. Follow the Login Guide in order to make this tab available.<br />
@@ -75,7 +75,7 @@ Fefer to the User Guide for further instructions.
 ####Reviewing your blogs:
 1. Click on the blog you wish to read.<br />
 2. Read your blog.<br />
-  **Limitation** A comments function has been implemented in GO but no fully implemented on the HTML and Angular side.
+3. See the comments on your blog posts. <br/>
 
 ####Add a new blog:
 1. Click on the blue plus button in the top right corner.<br />
@@ -93,12 +93,12 @@ API URL | HTTP Method | Request Data | Response Data
 "/" | GET | None. | index.html and all required resources.
 "/blogs" | POST | Post Object and Session Cookie Object. | ThreadPost object that includes all posts.
 "/blogs" | GET | Post Object and Session Cookie Object. | ThreadPost object that includes all posts.
-"/register" | POST | Store Inputted Data to the databas | ???
-"/login" | POST | Compares the data entered with data in the database| ???
-"/logout" | POST | ???| ???
-"/user" | POST | ???| ???
-"/user" | PUT | ???| ???
-"/user" | DELETE | Deletes session cookies realted to user| ???
+"/register" | POST | Store Inputted Data to the databas | status code 200 if ok otherwise error code
+"/login" | POST | Compares the data entered with data in the database| status code 200 if ok otherwise error code
+"/logout" | POST | reset all data required for use of website to nil| status code 200 if ok otherwise error code
+"/user" | POST | Send new post data to database | A new blog post with all data required
+"/user" | PUT | Not Implemented | Not Implemented 
+"/user" | DELETE | Deletes session cookies realted to user and deletes post| returns status code 200 if ok otherwise error code
 "/user" | GET | Gets the user specific blogs from datatbse | user specific blog returned
 
 
