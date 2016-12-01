@@ -32,49 +32,41 @@ Read the User Guide and click on the following hyperlink [Hosted Blog Page](http
 <br />
 <br />
 ##User Guide:
-<br />
 ####Registration:
-Click on the Register button in the top right corner.
-Input the data into the correct fields, in the correct format. (eg. email has to be in the "emailName"@"gmail.com" format)
-// *Limitation* The code does not currently validate whether a user with the same name already exists.
-Click submit
-You will be transported to the Login page automatically.
+1. Click on the Register button in the top right corner.<br />
+2. Input the data into the correct fields, in the correct format. (eg. email has to be in the "emailName"@"gmail.com" format)<br />
+3. Click submit<br />
+4. You will be transported to the Login page automatically.<br />
+  **Limitation** The code does not currently validate whether a user with the same name already exists.
 
-Log in:
-1. Click on the login button in the top right corner.
-2. Input your login details.
-3. Click submit and await response from the database.
-####Limitation
-'''
-Limitation The login function is currently partly working. The feedback is not correct as the user
-can be looged in correctly but it will still be displayed as invalid login. This is to do with page State
-'''
+####Log in:
+1. Click on the login button in the top right corner.<br />
+2. Input your login details.<br />
+3. Click submit and await response from the database.<br />
 
-  Tabs:
+###Tabs:
+####Blogs:
+1. Click on the Blogs tab in the left corner.<br />
+2. All the blogs that are currently in the database will be displayed.<br />
+3. Click on the blog that you are interested in reading.<br />
 
-    Blogs:
-    1. Click on the Blogs tab in the left corner.
-    2. All the blogs that are currently in the database will be displayed.
-    3. Click on the blog that you are interested in reading.
-    ####Limitation
-    '''
-    //  A comments function has been implemented in GO but no fully implemented on the HTML and Angular side
-    '''
-  User Page:
-   1. Follow the Login Guide in order to make this tab available.
-   2. Click on your username in the top right corner.
-   3. A list of your personal posts will appear.
+  **Limitation** A comments function has been implemented in GO but no fully implemented on the HTML and Angular side.
 
-      Reviewing your blogs:
-      1. Click on the blog you wish to read.
-      2. Read your blog.
-      // *Limitation* A comments function has been implemented in GO but no fully implemented on the HTML and Angular side
+####User Page:
+1. Follow the Login Guide in order to make this tab available.<br />
+2. Click on your username in the top right corner.<br />
+3. A list of your personal posts will appear.<br />
 
-      Add a new blog:
-      1. Click on the blue plus button in the top right corner.
-      2. Insert a title.
-      3. Insert the blog post. (Must be over 70 characters)
-      4. Insert the author name.
-      5. Review the blog details. The frame surrounding the text fields will turn green if the input is valid and red if it is not/ or field is empty
-      6. Click the submit button at the bottom of the page.
-      7. You will be redirected to the home page. Navigate back to the User Page in order to view your new post.
+####Reviewing your blogs:
+1. Click on the blog you wish to read.<br />
+2. Read your blog.<br />
+  **Limitation** A comments function has been implemented in GO but no fully implemented on the HTML and Angular side.
+
+####Add a new blog:
+1. Click on the blue plus button in the top right corner.<br />
+2. Insert a title.<br />
+3. Insert the blog post. (Must be over 70 characters)<br />
+4. Insert the author name.<br />
+5. Review the blog details. The frame surrounding the text fields will turn green if the input is valid and red if it is not/ or field is empty<br />
+6. Click the submit button at the bottom of the page.<br />
+7. You will be redirected to the home page. Navigate back to the User Page in order to view your new post.<br />
