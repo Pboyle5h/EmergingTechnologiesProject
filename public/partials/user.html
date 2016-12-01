@@ -21,7 +21,7 @@
           <div>
 
             <h2>{{post.title}}</h2>
-            
+
             <cite>by {{post.author}} on {{post.createdOn | date}}</cite>
             <div class="post-body">
              <p class="blogPost">
@@ -45,6 +45,12 @@
           <button class="btn btn-primary" ng-click="blog.selectTab('edit')">Update Post></button>
           <button class="btn btn-danger" ng-click="blog.deletePost(post)">Delete Post</button>
         </form>
+        <div class="post" ng-show="blog.isSelected('edit')">
+          <div class="">
+            <textarea ng-model="blog.post.body" ng-list="/\n/" rows="10">{{post.body}}</textarea>
+            <button class="btn btn-primary" ng-click="blog.updatePost(post)">Update Post</button>
+          </div>
+        </div>
       </div>
         <div class="post" ng-show="blog.isSelected('new')">
           <h2>Add New Post</h2>
@@ -53,9 +59,9 @@
                   <h4>Title</h4>
                   <input type="text" ng-model="blog.post.title"/>
                   <h4>Body</h4>
-                  <p class = "error">Message must be over 70 characters</p>                  
+                  <p class = "error">Message must be over 70 characters</p>
                   <textarea ng-model="blog.post.body" ng-list="/\n/" rows="10" required ng-minlength="70"></textarea>
-                  
+
 
                   <label for="">by:</label>
                   <input type="text" ng-model="blog.post.author" placeholder="Author Name" required/>
@@ -65,11 +71,13 @@
           </div>
           </div>
         </div>
+<<<<<<< HEAD
         <div class="post" ng-show="blog.isSelected('edit')">
           <div class="">
             <textarea ng-model="blog.post.body" ng-list="/\n/" rows="10" cols "10" wrap="hard">{{post.body}}</textarea>
             <button class="btn btn-primary" ng-click="blog.updatePost(post)">Update Post</button>
           </div>
         </div>
+
     </div>
   </div>

@@ -1,4 +1,4 @@
-<nav class="navbar-inner" ng-controller="LogoutCtrl">
+<nav class="navbar-inner">
    <div class="navbar transparent navbar-inverse navbar-fixed-top">
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
@@ -8,12 +8,15 @@
          <span class="icon-bar"></span>
          <span class="icon-bar"></span>
          </button>
+
          <a class="navbar-brand" href="/">Blog&Go</a>
+
       </div>
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
          <ul class="nav navbar-nav">
             <li><a href="/blogs">Blogs <span class="sr-only">(current)</span></a></li>
+
             <li><a href="/user">User</a></li>            
          </ul>
          <ul class="nav navbar-nav navbar-right">
@@ -25,7 +28,7 @@
             </form>
            
             <a class="btn btn-primary btn-lg" href="/register" ng-show="!isAuth">Register</a>
-            <a class="btn btn-primary btn-lg" href="/login" ng-show="!isAuth">Sign In</a>   
+            <a class="btn btn-primary btn-lg" href="/login" ng-show="!isAuth">Sign In</a>
             <a class="btn btn-primary btn-lg" href="/user" ng-show="isAuth">{{username}}</a>
             <a class="btn btn-primary btn-lg" href="/logout" ng-show="isAuth">Logout</a>
          </ul>
