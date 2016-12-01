@@ -73,6 +73,7 @@ func initRouter() *mux.Router {
 	// adapted from https://auth0.com/blog/authentication-in-golang/
 	r.Handle("/register", errorHandler(Register)).Methods("POST")
 	r.Handle("/login", errorHandler(loginHandler)).Methods("POST")
+	r.Handle("/logout", errorHandler(logoutHandler)).Methods("POST")
 	r.Handle("/user", errorHandler(createBlog)).Methods("POST")
 	r.Handle("/blogs", errorHandler(getBlogs)).Methods("GET")
 	r.Handle("/user", errorHandler(getUserBlogs)).Methods("GET")
@@ -128,6 +129,7 @@ func Register(w http.ResponseWriter, r *http.Request) error {
 		insert(a)
 	}
 	return err
+	//http.Redirect(w, r, "/", 302)
 }
 
 type (
@@ -145,8 +147,10 @@ func loginHandler(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return err
 	}
+	//fmt.Println(login.Username)
 	defer r.Body.Close()
 	if err := loginValidation(login.Username, login.Password); err == nil {
+		//fmt.Println("success")
 		session, err := store.Get(r, "session")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -168,7 +172,8 @@ func loginValidation(username string, password string) error {
 	result := User{}
 	err = c.Find(bson.M{"username": username}).Select(bson.M{"username": 1, "password": 1, "_id": 0}).One(&result)
 	if err != nil {
-		return err
+		// TODO: This exits the cript if the query fails to find the user, needs to be changed
+		//log.Fatal(err)
 	}
 	if result.Username == username && result.Password == password {
 		fmt.Println("Connection succesful")
@@ -179,20 +184,22 @@ func loginValidation(username string, password string) error {
 	}
 }
 
-func logoutHandler(w http.ResponseWriter, req *http.Request) {
+func logoutHandler(w http.ResponseWriter, req *http.Request) error {
+
 	session, err := store.Get(req, "session")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return err
 	}
 	session.Values["username"] = ""
 	if err := session.Save(req, w); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return err
 	}
+	w.Header().Add("username", "")
+	w.Header().Add("password", "")
 	currentUser = ""
-	currentUserBlogs = nil
-	http.Redirect(w, req, "/", 302)
+	return err
 }
 
 type (
@@ -300,7 +307,7 @@ func updateBlogPost(w http.ResponseWriter, r *http.Request) error {
 		return jErr
 	}
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Blogs")
-	err = c.Update(bson.M{"uniqueid": blog.UniqueId},
+	err = c.Update(bson.M{"uniqueId": blog.UniqueId},
 		bson.M{"title": blog.Title})
 	if err != nil {
 		return err
@@ -359,22 +366,20 @@ func getComments(blogID string) []Comment {
 }
 
 //adapted from https://stevenwhite.com/building-a-rest-service-with-golang-3/ used to make connection to mongoDB database
-func insert(a User) error{
+func insert(a User) {
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Users")
 	err = c.Insert(&User{a.Name, a.Username, a.Password, a.Email, nil})
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
-	return nil
 }
 
-func insertComment(uniqid string, cbody string, cauthor string) error{
+func insertComment(a Comment) {
 	c := mongoConnection.DB("heroku_lzbj5rj0").C("Comments")
-	err = c.Insert(&Comment{uniqid, cbody, cauthor})
+	err = c.Insert(&Comment{a.CBlogID, a.CBody, a.CAuthor})
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
-	return nil
 }
 
 // adapted from https://github.com/campoy/todo/blob/master/server/server.go

@@ -8,7 +8,9 @@ blog.config(function($routeProvider, $locationProvider){
   .when('/blogs', {templateUrl: '/partials/blogs.html'})
   .when('/register', {templateUrl: '/partials/register.html'})
   .when('/login', {templateUrl: '/partials/login.html'})
-  .when('/user', {templateUrl: '/partials/user.html'});
+  .when('/user', {templateUrl: '/partials/user.html'})
+  .when('/logout', {templateUrl: '/partials/logout.html'})
+  .when('/about', {templateUrl: '/partials/about.html'});
 
   $locationProvider.html5Mode(true); // takes the # out of the url
 });
@@ -50,16 +52,7 @@ blog.controller('MainCtrl', function($scope, $timeout){
   $timeout(text4, 2000);
 });
 
-// blog.controller('NavCtrl',function($scope, authService, $rootScope){
-//   // //$scope.isAuth = authService.isAuth();
-//   //
-//   // //console.log("username: " + authService.getCredentials());
-//   // console.log("username:" + $rootScope.username);
-//   // //$scope.username = authService.getCredentials();
-//   // $scope.username = $rootScope.username;
-// });
-
-blog.controller('LoginCtrl', function($scope, $http, $window, $location,authService){
+blog.controller('LoginCtrl', function($scope, $http, $location,authService){
   $scope.login = function(){
     authService.Login($scope.username, $scope.password, function(response, status){
         if(status == 200){
@@ -74,16 +67,14 @@ blog.controller('LoginCtrl', function($scope, $http, $window, $location,authServ
   };
 });
 
-blog.controller('LogoutCtrl', function($scope, $http, $window, $location, authService){
+blog.controller('LogoutCtrl', function($scope, $http, $location, authService){
   $scope.logout = function(){
-    authService.Logout($scope.username, function(response, status){
-      if(status == 200){
-        $location.path("/");
-      }else {
-        console.log(response.status);
-      }
-    });
+    authService.Logout();
   };
+
+  $scope.changeMind = function(){
+    $location.path("/");
+  }
 });
 
 // adapted from https://codepen.io/nickmoreton/pen/mgtLK
@@ -230,7 +221,7 @@ var logError = function(data, status) {
    console.log('code '+status+': '+data);
  };
 
-blog.factory('authService', function($http, $rootScope) {
+blog.factory('authService', function($http, $rootScope, $location) {
 
   var service = {};
   //var username = "";
@@ -245,17 +236,18 @@ blog.factory('authService', function($http, $rootScope) {
       $rootScope.username = username;
       callback(response, status);
     });
-  }
+  };
 
-  // service.setCredentials = function(username, password){
-  //   this.username = username;
-  //   console.log("set creds function " + username);
-  // };
-  //
-  // service.getCredentials = function(){
-  //   console.log("get creds " +  this.username);
-  //   return this.username;
-  // }
+  service.Logout = function(){
+    $http.post('/logout').
+    success(function(response, status){
+      $rootScope.isAuth = false;
+      $rootScope.username = "";
+      $location.path("/");
+      //callback(response, status);
+    });
+  };
+
   return service;
 
 });
